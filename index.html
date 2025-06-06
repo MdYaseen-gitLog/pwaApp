@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        console.log("Hello...");
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <form action="dashboard.html">
+        <input type="text" placeholder="Username" required><br>
+        <input type="password" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- Installation Button -->
+    <button id="installBtn" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        📲 Install App
+    </button>
+
+    <!-- Version Display -->
+    <div style="position: fixed; bottom: 0; left: 0; padding: 5px 10px; font-size: 12px; color: gray;">
+        Version: <span id="appVersion">Loading...</span>
+    </div>
+
+    <!-- Link to script -->
+    <script src="install.js"></script>
+
+</body>
+
+</html>
