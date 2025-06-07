@@ -1,4 +1,5 @@
 {
+  "version": "1.6.0",
   "name": "PWA App",
   "short_name": "PWAApp",
   "start_url": "/pwaApp/index.html",
@@ -20,17 +21,30 @@
   ],
   "shortcuts": [
     {
-      "name": "Dashboard",
-      "short_name": "Dashboard",
-      "url": "/pwaApp/dashboard.html",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
-    },
-    {
       "name": "Reports",
       "short_name": "Reports",
       "url": "/pwaApp/reports.html",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Analytics",
+      "short_name": "Analytics",
+      "url": "/pwaApp/analytics.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Setting",
+      "short_name": "Setting",
+      "url": "/pwaApp/settings.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/pwaApp/dashboard.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
     }
+   
   
 
   ]
