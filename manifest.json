@@ -31,17 +31,18 @@
       "url": "/pwaApp/reports.html",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
     },
+        {
+      "name": "Settings",
+      "short_name": "Settings",
+      "url": "/pwaApp/settings.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
     {
       "name": "Analytics",
       "short_name": "Analytics",
       "url": "/pwaApp/analytics.html",
       "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Settings",
-      "short_name": "Settings",
-      "url": "/pwaApp/settings.html",
-      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
     }
+
   ]
 }
