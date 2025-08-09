@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zora AI</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="canonical" href="https://mdyaseen-gitlog.github.io/pwaApp/">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
+
+    <link rel="stylesheet" href="style.css">
+    <!-- Add Leaflet and Turf.js -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+    <script>
+        console.log("Hello...");
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+    <title>Zora Chatbot</title>
+    <style>
+        /* Chat toggle button */
+        .chatbot-container {
+            position: fixed;
+            bottom: 90px;
+            /* Leaves room for the toggle button below */
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-family: Arial, sans-serif;
+            z-index: 1001;
+            /* Higher than toggle */
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 64px;
+            height: 64px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+            overflow: hidden;
+            animation: fadeInUp 1s ease;
+        }
+
+        .zora-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 50%;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.05);
+            transition: 0.2s ease;
+        }
+
+
+
+        #muteBtn {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            position: relative;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+
+        #chatMessages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f7f7f7;
+            font-size: 14px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            gap: 5px;
+        }
+
+        .chat-input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .chat-input-area button {
+            padding: 4px 8px;
+            font-size: 12px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .chat-input-area button:hover {
+            background: #0056b3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .chatbot-container {
+                width: 90%;
+                height: 100dvh;
+                /* Dynamic viewport height */
+                max-height: 90dvh;
+                bottom: 0;
+                right: 5%;
+                border-radius: 10px 10px 0 0;
+            }
+        }
+
+        .chat-input-area button:nth-child(2) {
+            background-color: white;
+        }
+
+
+
+        /* Voice listening animation */
+        .listening {
+            animation: pulse 1s infinite;
+            background-color: #d147f8 !important;
+            color: black !important;
+        }
+
+        .voice-button {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .voice-button.listening {
+            animation: pulsePink 1s infinite;
+            background-color: #d147f8;
+            box-shadow: 0 0 0 0 rgba(209, 71, 248, 0.7);
+        }
+
+        .voice-button img {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Pulse animation */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(209, 71, 248, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(209, 71, 248, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(209, 71, 248, 0);
+            }
+        }
+
+        #stationSuggestions {
+            position: absolute;
+            bottom: 100%;
+            /* ⬅️ push it above the input */
+            left: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 10;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+
+        #stationSuggestions li {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        #stationSuggestions li:hover {
+            background-color: #eee;
+        }
+
+        .user-msg,
+        .zora-msg {
+            max-width: 80%;
+            margin: 8px 0;
+            padding: 10px 14px;
+            border-radius: 18px;
+            clear: both;
+            line-height: 1.4;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+
+        .user-msg {
+            background-color: #DCF8C6;
+            color: #000;
+            float: right;
+            text-align: right;
+            border-bottom-right-radius: 0;
+        }
+
+        .zora-msg {
+            background-color: #E4E6EB;
+            color: #000;
+            float: left;
+            text-align: left;
+            border-bottom-left-radius: 0;
+        }
+
+        #quickReplies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-top: 1px solid #ccc;
+        }
+
+        .quick-btn {
+            padding: 6px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 13px;
+            margin: 4px 4px 4px 0;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .control-btn {
+            padding: 4px 8px;
+            background-color: #d147f8;
+            color: white;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 12px;
+            margin: 2px 2px 2px 0;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .quick-btn:hover {
+            background-color: #0056b3;
+        }
+
+
+        .quick-toggle-btn {
+            padding: 6px 10px;
+            font-size: 13px;
+            border: none;
+            background-color: #6c757d;
+            color: white;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .quick-toggle-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: scale(0.9);
+                height: 0;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .settings-panel {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #fefefe;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .settings-panel select {
+            width: 100%;
+            padding: 6px;
+            margin-top: 4px;
+        }
+
+        #chatMessages.rainy-theme::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("icons/raindrops.gif");
+            /* Replace with your rain effect */
+            background-repeat: repeat;
+            background-size: cover;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .station-line {
+            position: relative;
+            margin: 20px 0;
+            padding-left: 20px;
+            border-left: 4px solid #ccc;
+
+        }
+
+        .station-line.red {
+            border-color: #dc3545;
+        }
+
+        .station-line.blue {
+            border-color: #007bff;
+        }
+
+        .station {
+            position: relative;
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+
+
+
+        .station::before {
+            content: "";
+            position: absolute;
+            left: -12px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+        }
+
+        .station-line.red .station::before {
+            color: #dc3545;
+        }
+
+        .station-line.blue .station::before {
+            color: #007bff;
+        }
+
+        .station.interchange::before {
+            background: linear-gradient(45deg, #dc3545 50%, #007bff 50%);
+            border: 2px solid #333;
+        }
+
+        .station.interchange {
+            position: relative;
+            font-weight: bold;
+            cursor: help;
+        }
+
+        .station.interchange:hover::after {
+            content: "Interchange station";
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #444;
+            color: #fff;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div style="padding: 10px; margin: 10px; border: 1px solid #ccc; border-radius: 8px;">
+        <label>From:
+            <select id="sourceDropdown">
+                <option value="">Select Source</option>
+            </select>
+        </label>
+        <label style="margin-left: 10px;">To:
+            <select id="destinationDropdown">
+                <option value="">Select Destination</option>
+            </select>
+        </label>
+        <button id="startBtn" style="margin-left: 10px;">Start Journey</button>
+    </div>
+    <!-- Make sure this is in your HTML -->
+    <div id="stationName"></div>
+    <div id="nextTrainTime"></div>
+    <div id="trainCountdown"></div>
+
+
+
+    <button class="chat-toggle" onclick="toggleChatbot()">
+        <img src="icons/zora-icon-48.png" alt="Zora Icon" class="zora-icon">
+    </button>
+
+    <div class="chatbot-container" id="chatbot">
+        <div class="chat-header">
+
+            Zora AI - Patna Metro Assistant
+            <button id="muteBtn" onclick="toggleMute()" class="btn btn-primary">🔊</button>
+            <button class="chat-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div id="chatMessages">
+            <div><strong>Zora:</strong> Hi, I’m Zora, your Patna Metro assistant.</div>
+        </div>
+        <button style="display: none; border: none;margin-top: 2px;background-color: #ccc;" onclick="hideMap()"
+            id="maphidebtn">Hide Map</button>
+        <div id="map" style="height: 260px; border-top: 1px solid #ddd; display: none;"></div>
+        <div id="controlButtons" style="margin-top: 10px; text-align: center;">
+            <button class="control-btn" onclick="toggleQuickReplies()" id="toggleQuickBtn">Show Quick Replies</button>
+            <button class="control-btn" onclick="showHistoryQuickReplies()">🕘 History</button>
+            <button class="control-btn" onclick="clearChat()">Clear Chat</button>
+            <button class="control-btn" id="openSettingsBtn" class="quick-btn">⚙️</button>
+        </div>
+
+        <div id="quickReplies" style="display: none;"></div>
+
+        <div class="chat-input-area">
+
+            <div style="position: relative; flex-grow: 1;">
+                <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off" s>
+                <ul id="stationSuggestions"></ul>
+            </div>
+
+            <button id="voiceBtn" onclick="startVoiceInput()" class="voice-button">
+                <img src="icons/chatmic.png" alt="mic" width="24" height="24">
+            </button>
+            <button onclick="sendChat()">Send</button>
+
+        </div>
+
+
+    </div>
+
+    <script>
+        let awaitingStationFor = null;
+        let scheduleData = {};
+        let awaitingLineSelect = false;
+        let selectedLine = null;
+        let awaitingSource = false;
+        let awaitingDestination = false;
+        let selectedSource = null;
+        let selectedDestination = null;
+        const userQueryHistory = [];
+
+        const OPENWEATHER_API_KEY = "e8d83feabbee14a0c1323f56e4c48145"; // 🔐 Replace this
+
+        const terminalStations = {
+            'East': 'Khemni Chak',
+            'West': 'Danapur',
+            'North': 'Patna_Junction Blue_Line',
+            'South': 'New ISBT'
+        };
+
+        const gracePeriod = 15; // minutes after last_train
+        // Load schedule JSON
+        fetch("data/schedule_both_directions.json")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                scheduleData = data;
+                // Call function only after data is ready
+                trainDirection("Vikas Bhawan", "West");
+            })
+            .catch(err => {
+                console.error("Failed to load schedule:", err);
+            });
+
+        //Zora Theme setup
+        let appTheme = {};
+        let themeList = {};
+        let currentThemeMode = localStorage.getItem("themeMode") || "zora";
+
+        fetch('data/settings.json')
+            .then(res => res.json())
+            .then(data => {
+                themeList = data.theme;
+                loadThemeOptions(themeList);
+                applyTheme(themeList[currentThemeMode]);
+            });
+
+        function applyTheme(theme) {
+            // Remove old styles
+            const oldStyle = document.getElementById("dynamic-theme-style");
+            if (oldStyle) oldStyle.remove();
+
+            const chatBox = document.getElementById("chatMessages");
+            chatBox.classList.remove("rainy-theme", "light-theme", "dark-theme", "sepia-theme", "coolblue-theme", "contrast-theme");
+
+            if (theme.mode) {
+                chatBox.classList.add(`${theme.mode}-theme`);
+            }
+
+
+
+
+            const style = document.createElement("style");
+            style.id = "dynamic-theme-style";
+            style.innerHTML = `
+            .zora-msg { background-color: ${theme.zoraMessageBg}; color: ${theme.textColor}; }
+            .user-msg { background-color: ${theme.userMessageBg}; color: ${theme.textColor}; }
+            .quick-btn { background-color: ${theme.primaryColor}; color: #fff; border: none; }
+            .quick-btn:hover { opacity: 0.9; }
+            `;
+            document.head.appendChild(style);
+        }
+
+
+        function loadThemeOptions(themes) {
+            const select = document.getElementById("themeSelect");
+            select.innerHTML = "";
+
+            for (const key in themes) {
+                const opt = document.createElement("option");
+                opt.value = key;
+                opt.textContent = themes[key].label || key;
+                if (key === currentThemeMode) opt.selected = true;
+                select.appendChild(opt);
+            }
+
+            select.onchange = () => {
+                const selected = select.value;
+                applyTheme(themes[selected]);
+            };
+        }
+
+        function toggleChatbot() {
+            const bot = document.getElementById("chatbot");
+            bot.style.display = bot.style.display === 'none' || bot.style.display === '' ? 'flex' : 'none';
+        }
+
+        async function sendChat() {
+            const input = document.getElementById("chatInput");
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatBox = document.getElementById("chatMessages");
+
+            // ✅ Show user message
+            chatBox.innerHTML += `<div class="user-msg">${message}</div>`;
+
+            // ✅ Save to history
+            if (!userQueryHistory.includes(message)) {
+                userQueryHistory.unshift(message);
+            }
+            if (userQueryHistory.length > 10) {
+                userQueryHistory.pop();
+            }
+
+            // ✅ Get Zora's reply
+            const reply = await getZoraReply(message);
+
+            // ✅ Show Zora's reply
+            chatBox.innerHTML += `<div class="zora-msg">${reply}</div>`;
+
+            // ✅ Speak response (if using speech)
+            speakText(stripHtml(reply));
+
+            // ✅ Clear input and scroll to bottom
+            input.value = "";
+            setTimeout(() => {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 100);
+        }
+
+        function hideMap() {
+            const mapDiv = document.getElementById("map");
+            const mapBtn = document.getElementById("maphidebtn");
+            mapDiv.style.display = "none";
+            mapBtn.style.display = "none";
+        }
+
+        function clearChat() {
+            // ✅ Prevent multiple confirmations
+            if (document.getElementById("chatClearConfirm")) return;
+
+            const confirmWrapper = document.createElement("div");
+            confirmWrapper.id = "chatClearConfirm"; // important for deduplication
+            confirmWrapper.className = "zora-msg";
+            confirmWrapper.innerHTML = "⚠️ Are you sure you want to clear the chat?";
+
+            const yesBtn = document.createElement("button");
+            yesBtn.className = "quick-btn";
+            yesBtn.innerText = "Yes";
+            yesBtn.onclick = () => {
+                const mapDiv = document.getElementById("map");
+                const mapBtn = document.getElementById("maphidebtn");
+                if (mapDiv) mapDiv.style.display = "none";
+                if (mapBtn) mapBtn.style.display = "none";
+
+                const chatBox = document.getElementById("chatMessages");
+
+                // ✅ Fade out + reset
+                chatBox.classList.add("fade-out");
+                setTimeout(() => {
+                    chatBox.classList.remove("fade-out");
+                    chatBox.innerHTML = `<div><strong>Zora:</strong> Hi, I’m Zora, your AI assistant.</div>`;
+                    awaitingStationFor = null;
+                }, 600);
+
+                confirmWrapper.remove(); // remove prompt
+            };
+
+            const noBtn = document.createElement("button");
+            noBtn.className = "quick-btn";
+            noBtn.innerText = "No";
+            noBtn.onclick = () => {
+                confirmWrapper.classList.add("fade-out");
+                setTimeout(() => confirmWrapper.remove(), 600);
+            };
+
+            confirmWrapper.appendChild(document.createElement("br"));
+            confirmWrapper.appendChild(yesBtn);
+            confirmWrapper.appendChild(noBtn);
+
+            document.getElementById("chatMessages").appendChild(confirmWrapper);
+            document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
+            awaitingStationFor = null;
+
+            // addZoraMessage("Hi, I’m Zora, your AI assistant.");//after open setting
+            // showSettingsQuickReplyButton();//after open setting
+
+        }
+
+
+        const lineStations = {
+            red: [
+                "Danapur", "Saguna Mor", "RPS Mor", "Patliputra", "Rukanpura",
+                "Raja Bazar", "Patna Zoo", "Vikas Bhawan", "Vidyut Bhawan",
+                "Patna_Junction Red_Line", "Mithapur", "Ramkrishna Nagar",
+                "Jaganpura", "Khemni_Chak Red_Line"
+            ],
+            blue: [
+                "Patna_Junction Blue_Line", "Akashvani", "Gandhi Maidan", "PMCH",
+                "University", "Moin-ul-Haq Stadium", "Rajendra Nagar", "Malahi Pakri",
+                "Khemni_Chak Blue_Line", "Bhootnath", "Zero Mile", "New ISBT"
+            ]
+        };
+
+
+        const travData = {
+            "Danapur>Saguna Mor": { time: 1, distance: 0.74 },
+            "Saguna Mor>RPS Mor": { time: 1, distance: 0.87 },
+            "RPS Mor>Patliputra": { time: 1, distance: 0.74 },
+            "Patliputra>Rukanpura": { time: 3, distance: 1.92 },
+            "Rukanpura>Raja Bazar": { time: 3, distance: 1.59 },
+            "Raja Bazar>Patna Zoo": { time: 2, distance: 1.25 },
+            "Patna Zoo>Vikas Bhawan": { time: 2, distance: 1.58 },
+            "Vikas Bhawan>Vidyut Bhawan": { time: 2, distance: 1.33 },
+            "Vidyut Bhawan>Patna_Junction Red_Line": { time: 2, distance: 1.37 },
+            "Patna_Junction Red_Line>Mithapur": { time: 4, distance: 2.36 },
+            "Mithapur>Ramkrishna Nagar": { time: 1, distance: 1.07 },
+            "Ramkrishna Nagar>Jaganpura": { time: 1, distance: 1.12 },
+            "Jaganpura>Khemni_Chak Red_Line": { time: 1, distance: 0.73 },
+
+            "Patna_Junction Blue_Line>Akashvani": { time: 1, distance: 0.58 },
+            "Akashvani>Gandhi Maidan": { time: 2, distance: 1.35 },
+            "Gandhi Maidan>PMCH": { time: 2, distance: 1.19 },
+            "PMCH>University": { time: 2, distance: 1.21 },
+            "University>Moin-ul-Haq Stadium": { time: 3, distance: 1.62 },
+            "Moin-ul-Haq Stadium>Rajendra Nagar": { time: 2, distance: 1.0 },
+            "Rajendra Nagar>Malahi Pakri": { time: 2, distance: 1.38 },
+            "Malahi Pakri>Khemni_Chak Blue_Line": { time: 2, distance: 1.29 },
+            "Khemni_Chak Blue_Line>Bhootnath": { time: 2, distance: 1.21 },
+            "Bhootnath>Zero Mile": { time: 2, distance: 1.34 },
+            "Zero Mile>New ISBT": { time: 3, distance: 1.82 }
+        };
+
+        const metroGraph = {};
+
+        for (let key in travData) {
+            const [from, to] = key.split(">");
+            if (!metroGraph[from]) metroGraph[from] = [];
+            if (!metroGraph[to]) metroGraph[to] = [];
+
+            const edge = travData[key];
+
+            metroGraph[from].push({ station: to, ...edge });
+            metroGraph[to].push({ station: from, ...edge }); // Bidirectional
+        }
+
+        async function getZoraReply(msg) {
+            const lower = msg.toLowerCase();
+            const interchangeStations = ["Khemni_Chak", "Patna_Junction"];
+
+            //**********************
+            // ✅ General Questions
+            if (lower.includes("your name")) return "My name is Rehan, your Patna Metro Assistant!";
+            if (lower.includes("friend")) return "My friend name is Haya Perveen";
+            if (lower.includes("country")) return "I am from India";
+            if (lower.includes("state")) return "I am from Bihar";
+            if (lower.includes("city")) return "I am from capital of bihar Patna, now a metro city.";
+            if (lower.includes("age")) return "I don’t have an age like a person, but I was created by a developer and first released to the public in 15 August 2025. So if you’re asking how long I’ve been around—technically, about  1 months as of now.";
+            if (lower.includes("gender")) return "I don’t have a gender—I’m just an AI designed to assist with information about patna metro journey.";
+            if (lower.includes("you are a robot")) return "Sort of! I'm not a robot with a body, like something walking around with wires and limbs. I'm a virtual AI—a program that exists in the digital world. You can think of me more like a super-advanced chatbot or assistant that lives in the cloud, not in a machine.";
+            if (lower.includes("who are you")) return "I'm Zora, an AI here to help you with the metro system.";
+            if (lower.includes("how are you")) return "I'm always great! Ready to assist you!";
+            if (lower.includes("thank")) return "You're welcome! Heehii..Heehii...Heehii....";
+            if (lower.includes("bye")) return "Goodbye! Have a safe journey.";
+            if (lower.includes("what can you do")) return "I can help with train schedules, fares, and station details.";
+            if (lower.includes("joke")) return "Why don’t trains ever get lost? Because they always follow their tracks! 🚆";
+            if (lower.includes("time now")) return `It's currently ${new Date().toLocaleTimeString()}.`;
+            if (lower == "date" || lower.includes("day")) return `Today is ${new Date().toDateString()}.`;
+            if (lower.includes("update") || lower.includes("notification") || lower.includes("news")) return "A big news about patna metro. Patna Metro first run not in 5 stations only 3 stations covered. New ISBT, Zero Mile & Bhoothnath. Next 2 stations khemnichak and malahi pakri started service in next month.";
+
+            // ✅ Show All Stations
+            if (lower.includes("all stations") || lower.includes("stations list") || lower === "stations") {
+                return `
+            <strong>Red Line Stations:</strong>
+            <div class="station-line red">
+                ${lineStations.red.map(st => {
+                    const nameOnly = st.replace(" Red_Line", "").replace(" Blue_Line", "");
+                    const isInterchange = interchangeStations.includes(nameOnly);
+                    return `<div class="station ${isInterchange ? 'interchange' : ''}">${st}</div>`;
+                }).join("")}
+            </div>
+            <br>
+            <strong>Blue Line Stations:</strong>
+            <div class="station-line blue">
+                ${lineStations.blue.map(st => {
+                    const nameOnly = st.replace(" Red_Line", "").replace(" Blue_Line", "");
+                    const isInterchange = interchangeStations.includes(nameOnly);
+                    return `<div class="station ${isInterchange ? 'interchange' : ''}">${st}</div>`;
+                }).join("")}
+            </div>`;
+            }
+
+
+
+            // ✅ Red Line stations
+            if (lower.includes("red line stations") || lower.includes("red line station") || lower.includes("red stations")) {
+                return `
+            <div class="station-line red">
+                ${lineStations.red.map(st => {
+                    const nameOnly = st.replace(" Red_Line", "").replace(" Blue_Line", "");
+                    const isInterchange = interchangeStations.includes(nameOnly);
+                    return `<div class="station ${isInterchange ? 'interchange' : ''}">${st}</div>`;
+                }).join("")}
+            </div>`;
+            }
+
+
+
+            // ✅ Blue Line stations
+            if (lower.includes("blue line stations") || lower.includes("blue line station") || lower.includes("blue stations")) {
+                return `
+            <div class="station-line blue">
+                ${lineStations.blue.map(st => {
+                    const nameOnly = st.replace(" Red_Line", "").replace(" Blue_Line", "");
+                    const isInterchange = interchangeStations.includes(nameOnly);
+                    return `<div class="station ${isInterchange ? 'interchange' : ''}">${st}</div>`;
+                }).join("")}
+            </div>`;
+            }
+
+
+            // ✅ Travel time/distance between stations
+            if (lower.includes("from") && lower.includes("to")) {
+                const parts = lower.toLowerCase().split("from")[1].split("to");
+                const rawFrom = parts[0].trim();
+                const rawTo = parts[1].trim();
+
+                const fromStation = findStationKey(rawFrom);
+                const toStation = findStationKey(rawTo);
+
+
+                if (fromStation == toStation) {
+                    return "Please select different source and destination station.";
+                }
+                if (!fromStation || !toStation) {
+                    addZoraMessage(`❌ I couldn't recognize one or both stations: "${rawFrom}", "${rawTo}"`);
+                    return;
+                }
+                const route = findShortestRoute(fromStation, toStation);
+                const distance = route.distance;
+                const time = route.time;
+                const fare = distance <= 2 ? 10 : distance <= 5 ? 20 : distance <= 10 ? 30 : distance <= 15 ? 40 : 50;
+                const totalStations = route.path.length;
+
+                if (!route) {
+                    addZoraMessage(`❌ No valid route found from <strong>${fromStation}</strong> to <strong>${toStation}</strong>.`);
+                    return;
+                }
+
+
+
+                const res = `📏 
+                Route from <strong>${fromStation}</strong> to <strong>${toStation}</strong>:<br>
+                <div style="font-size: 14px;">
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #2196F3; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>🕒 Travel Time:</strong> ${time} minutes
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #ec407a; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>📏 Distance:</strong> ${distance.toFixed(2)} km
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #8bc34a; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>💰 Fare:</strong> ₹${fare.toFixed(2)}
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #ff9800; padding: 10px; border-radius: 6px;">
+                        <strong>🚉 Stations (${totalStations}):</strong><br>
+                        ${route.path.join(" → ")}
+                    </div>
+                    <div style="margin-top: 10px;"><strong>✅ Have a safe journey!</strong></div>
+                </div>
+                `;
+
+                setTimeout(() => {
+                    showNextTrainButtonInChat(fromStation);      // already done
+                    showReverseRouteButton(fromStation, toStation); // new!
+                }, 300);
+
+                return res;
+            }
+
+
+
+
+            // ✅ Weather
+            if (lower.includes("weather") || lower.includes("temperature") || lower.includes("raining")) {
+                return await getWeather("Patna"); // Replace or extend for dynamic city support
+            }
+
+            // ✅ Greetings
+            if (["hii", "hello", "hey", "good morning", "good evening", "good night"].some(g => lower.includes(g))) {
+                return getGreeting();
+            }
+
+            if (lower.includes("plan journey") || lower.includes("journey") || lower.includes("travel") || lower.includes("start travel") || lower.includes("start journey")) {
+                awaitingSource = true;
+                awaitingLineSelect = "source"; // NEW: distinguish source vs destination
+                setTimeout(() => renderLineSelectInChat("source"), 300);
+                return "Please select your <strong>source line & station</strong> to begin:";
+            }
+
+            if (selectedSource && selectedDestination && (lower === "yes" || lower.includes("yes"))) {
+                document.getElementById("startBtn").click();
+                const src = selectedSource;
+                const dst = selectedDestination;
+                selectedSource = selectedDestination = null;
+                return `Starting your journey from <strong>${src}</strong> to <strong>${dst}</strong>. 🚇`;
+            }
+
+            if (selectedSource && selectedDestination && (lower === "no" || lower.includes("no"))) {
+                selectedSource = selectedDestination = null;
+                return "Okay, journey canceled. You can say 'start journey' again to retry.";
+            }
+            // ✅ Metro-specific triggers
+            if (lower.includes("first train")) {
+                awaitingStationFor = "first_train";
+                return "What station are you boarding from?";
+            }
+            if (lower.includes("last train")) {
+                awaitingStationFor = "last_train";
+                return "What station are you boarding from?";
+            }
+            if (lower.includes("next train")) {
+                const fromIndex = lower.indexOf("from ");
+                if (fromIndex !== -1) {
+                    const stationName = msg.substring(fromIndex + 5).trim();
+                    const stationKey = findStationKey(stationName);
+
+                    if (!stationKey) {
+                        return `I couldn’t find a station matching "${stationName}".`;
+                    }
+                    const directions = scheduleData[stationKey]?.directions;
+                    if (!directions) return "No schedule data available for that station.";
+                    let res = '';
+
+                    for (let dir in directions) {
+                        const dirName = terminalStations[dir] || dir;
+                        const result = trainDirection(stationName, dir);
+                        if (!result.time == "No service now") {
+                            res += `<strong>Next train from 1 ${stationKey}:</strong><br>`;
+                            res += result ? `Towards <b>${dirName}:</b> ${result.time} (in ${result.countdown})<br>` : `• ${dir}: No more trains<br>`;
+                        }
+                        else {
+                            res = "No service now1";
+
+                        }
+
+                    }
+                    return res;
+                } else {
+                    awaitingStationFor = "next_train";
+                    awaitingLineSelect = true;
+                    setTimeout(() => renderLineSelectInChat(), 300); // ✅ show in chat after message
+                    return "What station are you boarding from?<br><small>Please select a line & station below:</small>";
+
+                }
+            }
+
+
+            if (lower.includes("setting") || lower.includes("theme") || lower.includes("dark mode")) {
+                setTimeout(() => showSettingsQuickReplyButton(), 200);
+
+                return "Want to change how Zora looks? Tap Settings below.";
+            }
+
+
+
+            function cleanStationInput(input) {
+                return input
+                    .toLowerCase()
+                    .replace(/\b(station|stations|stn)\b/g, '')  // remove these words as whole words
+                    .replace(/\s+/g, ' ')                         // collapse multiple spaces to one
+                    .trim();
+            }
+
+            if (lower.includes("fare")) {
+                return "Minimum fare is ₹10, maximum is ₹50.";
+            }
+            if (lower.includes("help")) {
+                toggleQuickReplies();
+                return "Ask me things like:\n• When is the next train from Rajendra Nagar?\n• What is the fare?\n• What is the weather in Patna?\n• distance from danapur to mithapur?from bhoothnath to zero mile?";
+
+            }
+
+            // Menu controls using chat
+            //Open Map
+            if (lower.includes("open metro map") || lower.includes("open map") || lower.includes("map")) {
+                setTimeout(() => {
+                    window.location.href = "https://www.patnametroroute.in/metromap.html";
+                }, 1000); // optional delay so message appears
+
+                return "Opening map....";
+            }
+
+            //Open About us
+            if (lower.includes("about") || lower.includes("about patna metro")) {
+                setTimeout(() => {
+                    window.location.href = "https://www.patnametroroute.in/aboutus.html";
+                }, 1000); // optional delay so message appears
+
+                return "Please wait....";
+            }
+
+            //Open Metro Lines
+            if (lower.includes("metro lines") || lower.includes("metro line") || lower.includes("Station info") || lower.includes("Stations")) {
+                setTimeout(() => {
+                    window.location.href = "https://www.patnametroroute.in/metrolines.html";
+                }, 1000); // optional delay so message appears
+
+                return "Please wait....";
+            }
+
+            //Open Metro Red Line
+            if (lower.includes("red line map") || lower.includes("redline map")) {
+                setTimeout(() => {
+                    window.location.href = "https://www.patnametroroute.in/routelineRed.html";
+                }, 1000); // optional delay so message appears
+
+                return "Please wait....";
+            }
+
+            //Open Metro Blue Line
+            if (lower.includes("blue line") || lower.includes("blue line map") || lower.includes("blueline")) {
+                setTimeout(() => {
+                    window.location.href = "https://www.patnametroroute.in/routelineBlue.html";
+                }, 1000); // optional delay so message appears
+
+                return "Please wait....";
+            }
+
+            //Open Weather page
+            if (lower.includes("Forecast")) {
+                setTimeout(() => {
+                    window.location.href = "https://www.patnametroroute.in/weather.html";
+                }, 1000); // optional delay so message appears
+
+                return "Please wait....";
+            }
+
+            //*******************
+            // Nearest station query
+            if (lower.includes("nearest station") || lower.includes("nearest metro station") || lower.includes("nearest") || lower.includes("nearest metro") || lower.includes("locate") || lower.includes("locate me")) {
+                awaitingNearest = true;
+                setTimeout(showNearestStationConfirmButtons, 200); // delay for smoothness
+                return "🧭 Ensure your GPS or Location is enabled, and I’ll show the nearest station on map.";
+            }
+
+
+            // User confirms location access (yes/gps enabled)
+            if (awaitingNearest && (
+                lower.includes("location enabled") ||
+                lower.includes("gps") ||
+                lower.includes("yes") ||
+                lower.includes("enabled")
+            )) {
+                awaitingNearest = false;  // reset flag
+                return await respondWithNearestStation(); // trigger location
+            }
+
+            // (optional) user says "show station" after enabling GPS
+            if (lower.includes("show station") && awaitingNearest) {
+                awaitingNearest = false;
+                return await respondWithNearestStation();
+            }
+
+            // ✅ Station follow-up
+            if (awaitingStationFor && !awaitingLineSelect) {
+                const stationKey = findStationKey(msg);
+
+                // Validate station
+                if (!stationKey || (selectedLine && !lineStations[selectedLine].includes(stationKey))) {
+                    return `I couldn’t find a station matching "${msg}" in the ${capitalizeFirst(selectedLine)} Line.`;
+                }
+
+                const directions = scheduleData[stationKey]?.directions;
+                if (!directions) return "No schedule data available for that station.";
+
+                if (awaitingStationFor === "next_train") {
+
+                    let res = '';
+                    for (let dir in directions) {
+                        const result = trainDirection(stationKey, dir);
+                        console.log(result.time);
+                        if (!result.time == "No service now") {
+                            const dirName = terminalStations[dir] || dir;
+                            res += `<strong>Next train from 2 ${stationKey}:</strong><br>`;
+                            res += result
+                                ? `Towards <b>${dirName}:</b> ${result.time} (in ${result.countdown})<br>`
+                                : `Towards <b>${dirName}:</b> No more trains<br>`;
+                        }
+                        else {
+
+                            res = "Sorry, No service now2";
+                        }
+
+                    }
+
+                    // Reset state
+                    awaitingStationFor = null;
+                    selectedLine = null;
+                    return res;
+                }
+
+                if (awaitingSource) {
+                    const stationKey = findStationKey(msg);
+                    if (!stationKey) return `I couldn't find source station matching "${msg}".`;
+                    selectedSource = stationKey;
+                    document.getElementById("sourceDropdown").value = stationKey;
+                    awaitingSource = false;
+                    awaitingDestination = true;
+                    return `Source station set to <strong>${stationKey}</strong>. Now select your destination station.`;
+                }
+
+                if (awaitingDestination) {
+                    const stationKey = findStationKey(msg);
+                    if (!stationKey) return `I couldn't find destination station matching "${msg}".`;
+                    selectedDestination = stationKey;
+                    document.getElementById("destinationDropdown").value = stationKey;
+                    awaitingDestination = false;
+                    return `Destination set to <strong>${stationKey}</strong>. Do you want to travel from <strong>${selectedSource}</strong> to <strong>${selectedDestination}</strong>? (yes/no)`;
+                }
+
+
+
+                // First or last train logic
+                let res = `<strong>${capitalizeFirst(awaitingStationFor)} train from ${stationKey}:</strong><br>`;
+                for (let dir in directions) {
+                    const time = directions[dir][awaitingStationFor];
+                    if (time) {
+                        const dirName = terminalStations[dir] || dir;
+                        res += `• ${dirName}: ${time}<br>`;
+                    }
+                }
+
+                // Reset state
+                awaitingStationFor = null;
+                selectedLine = null;
+                return res;
+            }
+
+
+            // ✅ Station query (direct)
+            const stationname = capitalizeStationName(msg);
+            const stationKey = findStationKey(stationname);
+            if (stationKey) {
+                const directions = scheduleData[stationKey].directions;
+                let res = '';
+                for (let dir in directions) {
+                    const result = trainDirection(stationname, dir);
+                    const dirName = terminalStations[dir] || dir;
+                    if (!result.time == "No service now") {
+                        res += `<strong>Next train from 3 ${stationKey}:</strong><br>`;
+                        res += result ? `Towards <b>${dirName}:</b> ${result.time} (in ${result.countdown})<br>` : `Towards <b>${dirName}:</b> No more trains<br>`;
+                    }
+                    else {
+                        res = "No service now3";
+                    }
+
+                }
+                return res;
+            }
+
+            return `I'm not sure how to answer that. Try asking:
+            • "When is the next train from Rajendra Nagar?"
+            • "What is the fare?"
+            • "What is the weather in Patna?"`;
+        }
+
+        function capitalizeStationName(str) {
+            return str
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+
+        async function getWeather(cityName) {
+            try {
+                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${OPENWEATHER_API_KEY}&units=metric`);
+                const data = await res.json();
+                if (data.cod !== 200) return `Couldn't fetch weather for ${cityName}.`;
+
+                const { temp, feels_like, humidity } = data.main;
+                const description = data.weather[0].description;
+                return `The weather in ${cityName} is ${description}, ${temp}°C (feels like ${feels_like}°C), humidity: ${humidity}%.`;
+            } catch (err) {
+                return "Sorry, I couldn’t fetch the weather.";
+            }
+        }
+
+        function findStationKey(input) {
+            const term = input.toLowerCase();
+            const exact = Object.keys(scheduleData).find(key => key.toLowerCase() === term);
+            return exact || Object.keys(scheduleData).find(key => key.toLowerCase().includes(term));
+        }
+
+        function getGreeting() {
+            const h = new Date().getHours();
+            if (h < 12) return "Good morning! 🌅";
+            if (h < 17) return "Good afternoon! ☀️";
+            if (h < 21) return "Good evening! 🌇";
+            return "Good night! 🌙";
+        }
+
+        function capitalizeFirst(text) {
+            return text.includes("first") ? "First" :
+                text.includes("last") ? "Last" :
+                    text.includes("next") ? "Next" : text;
+        }
+
+
+        function parseTime(str) {
+            const [h, m] = str.split(":").map(Number);
+            const d = new Date();
+            d.setHours(h, m, 0, 0);
+            return d;
+        }
+
+        function formatTime(d) {
+            return `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
+        }
+
+        function startVoiceInput() {
+            const micBtn = event.target;
+            micBtn.classList.add("listening");
+
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Voice input is not supported in this browser.");
+                micBtn.classList.remove("listening");
+                return;
+            }
+
+            const recog = new webkitSpeechRecognition();
+            recog.lang = 'en-IN';
+            recog.interimResults = false;
+            recog.maxAlternatives = 1;
+
+            const input = document.getElementById("chatInput");
+            input.placeholder = "🎤 Listening...";
+
+            recog.onresult = (event) => {
+                input.value = event.results[0][0].transcript;
+                input.placeholder = "Type your message...";
+                micBtn.classList.remove("listening");
+                sendChat();
+            };
+
+            recog.onerror = (e) => {
+                micBtn.classList.remove("listening");
+                const input = document.getElementById("chatInput");
+
+                if (e.error === "no-speech") {
+                    input.placeholder = "No voice detected. Try again...";
+                    console.warn("🎤 No speech detected. Please speak clearly.");
+                } else {
+                    input.placeholder = "Voice error. Try typing...";
+                    console.error("Speech recognition error:", e);
+                    alert(e);
+                }
+            };
+
+
+            recog.onend = () => {
+                if (!input.value.trim()) input.placeholder = "Type your message...";
+                micBtn.classList.remove("listening");
+            };
+
+            recog.start();
+        }
+
+
+        let isMuted = false;
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById("muteBtn");
+            btn.innerText = isMuted ? "🔇" : "🔊";
+
+            // 🔇 Stop speech immediately when muted
+            if (isMuted && window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+
+        }
+
+
+        // Override speakText to respect mute
+        function speakText(text) {
+            if (isMuted || !('speechSynthesis' in window)) return;
+
+            // Clean symbols and emojis
+            const cleaned = text
+                .replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDDE0-\uDDFF]|\uD83D[\uDC00-\uDE4F\uDE80-\uDEF6]/g, '') // emojis
+                .replace(/[→→✅❌🚆•🔴🔵🧭]/g, '') // common symbols
+                .replace(/<[^>]*>/g, '') // strip HTML tags
+                .replace(/\s+/g, ' ') // collapse spaces
+                .trim();
+
+            const utter = new SpeechSynthesisUtterance(cleaned);
+            utter.lang = 'en-IN';
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utter);
+        }
+
+
+        function stripHtml(html) {
+            const div = document.createElement("div");
+            div.innerHTML = html;
+            const text = div.textContent || div.innerText || "";
+            return text.replace(/[-_]/g, '');  // remove hyphens and underscores
+        }
+
+
+        function findShortestRoute(from, to) {
+            const visited = new Set();
+            const queue = [{ station: from, path: [from], time: 0, distance: 0 }];
+
+            while (queue.length) {
+                const current = queue.shift();
+                const { station, path, time, distance } = current;
+
+                if (station === to) {
+                    return { path, time, distance };
+                }
+
+                if (visited.has(station)) continue;
+                visited.add(station);
+
+                for (const neighbor of metroGraph[station] || []) {
+                    if (!visited.has(neighbor.station)) {
+                        queue.push({
+                            station: neighbor.station,
+                            path: [...path, neighbor.station],
+                            time: time + neighbor.time,
+                            distance: distance + neighbor.distance
+                        });
+                    }
+                }
+            }
+
+            return null; // No route found
+        }
+
+
+
+        // Add near-station logic
+        // Load your Stations.geojson (same directory or adjust path)
+        let stationsGeojson = {};
+        fetch("data/Stations.geojson")
+            .then(res => res.json())
+            .then(data => { stationsGeojson = data; })
+            .catch(err => console.error("Failed to load Stations.geojson:", err));
+
+        let awaitingNearest = false;
+
+        async function respondWithNearestStation() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    resolve("Geolocation is not supported in your browser.");
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userPoint = turf.point([position.coords.longitude, position.coords.latitude]);
+
+                    // ✅ Create valid point FeatureCollection
+                    const stationPoints = turf.featureCollection(
+                        stationsGeojson.features.map(f =>
+                            turf.point(f.geometry.coordinates, f.properties)
+                        )
+                    );
+
+                    const nearest = turf.nearestPoint(userPoint, stationPoints);
+
+                    if (!nearest) {
+                        resolve("Could not find any nearby stations.");
+                        return;
+                    }
+
+                    const stationName = nearest.properties.station_name || "Station";
+                    renderMap(position.coords.latitude, position.coords.longitude, nearest);
+                    resolve(`The nearest station is <strong>${stationName}</strong>.`);
+                }, err => {
+                    console.error(err);
+                    resolve("Could not get your location. Please enable GPS access and try again.");
+                });
+            });
+        }
+
+
+        function renderMap(lat, lng, nearestFeature) {
+            const mapDiv = document.getElementById("map");
+            const mapBtn = document.getElementById("maphidebtn");
+            mapDiv.style.display = "block";
+            mapBtn.style.display = "block";
+
+            // Initialize map if not already done
+            if (!window._leafletMap) {
+                window._leafletMap = L.map("map").setView([lat, lng], 12);
+                L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                    attribution: "&copy; OpenStreetMap contributors"
+                }).addTo(window._leafletMap);
+            } else {
+                window._leafletMap.setView([lat, lng], 14);
+            }
+
+            // Clear old markers
+            if (window._stationMarker) window._stationMarker.remove();
+            if (window._userMarker) window._userMarker.remove();
+
+            // Add markers
+            window._userMarker = L.marker([lat, lng]).addTo(window._leafletMap)
+                .bindPopup("You are here");
+
+            const [stLng, stLat] = nearestFeature.geometry.coordinates;
+            window._stationMarker = L.marker([stLat, stLng]).addTo(window._leafletMap)
+                .bindPopup(nearestFeature.properties.station_name || "Station").openPopup();
+        }
+
+
+        document.getElementById("chatInput").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent default form submission or newline
+
+                sendChat();
+            }
+        });
+
+    </script>
+    <script>
+        // ✅ Create a clean station list for suggestions
+        const stations = Array.from(new Set([
+            ...lineStations.red,
+            ...lineStations.blue
+        ])).map(name =>
+            name.trim()
+        );
+
+        const chatInput = document.getElementById("chatInput");
+        const suggestions = document.getElementById("stationSuggestions");
+
+        chatInput.addEventListener("input", () => {
+            const inputText = chatInput.value;
+            suggestions.innerHTML = "";
+
+            const fromMatch = inputText.toLowerCase().lastIndexOf("from ");
+            const toMatch = inputText.toLowerCase().lastIndexOf("to ");
+            const triggerIndex = Math.max(fromMatch, toMatch);
+            const triggerType = fromMatch > toMatch ? "from" : "to";
+
+            if (triggerIndex !== -1) {
+                const partial = inputText.slice(triggerIndex + triggerType.length + 1).toLowerCase();
+
+                if (partial.length > 0) {
+                    const matches = stations.filter(s =>
+                        s.toLowerCase().includes(partial)
+                    );
+
+                    matches.forEach(station => {
+                        const li = document.createElement("li");
+                        li.textContent = station;
+                        li.onclick = () => {
+                            const before = inputText.slice(0, triggerIndex + triggerType.length + 1);
+                            chatInput.value = before + station + " ";
+                            suggestions.innerHTML = "";
+
+                            // ✅ Focus back to input and move cursor to end
+                            chatInput.focus();
+                            setTimeout(() => {
+                                chatInput.selectionStart = chatInput.selectionEnd = chatInput.value.length;
+                            }, 0);
+                        };
+
+                        suggestions.appendChild(li);
+                    });
+                }
+            }
+        });
+
+        document.addEventListener("click", (e) => {
+            if (e.target !== chatInput) {
+                suggestions.innerHTML = "";
+            }
+        });
+
+        const quickQuestions = [
+            "Plan Journey",
+            "Next train",
+            "Next train from Rajendra Nagar",
+            "Distance from Danapur to Mithapur",
+            "Nearest Metro Station",
+            "Show all stations",
+            "What is the fare?",
+            "What is the weather in Patna?",
+            "Red line stations",
+            "Blue line stations",
+            "setting"
+        ];
+
+        function renderQuickReplies() {
+            const container = document.getElementById("quickReplies");
+            container.innerHTML = "";
+            quickQuestions.forEach(q => {
+                const btn = document.createElement("button");
+                btn.className = "quick-btn";
+                btn.innerText = q;
+                btn.onclick = () => {
+                    document.getElementById("chatInput").value = q;
+                    sendChat();
+                    toggleQuickReplies(); // Hide after click
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // Run once on load
+        renderQuickReplies();
+        let quickRepliesVisible = false;
+
+        function toggleQuickReplies() {
+            quickRepliesVisible = !quickRepliesVisible;
+            const container = document.getElementById("quickReplies");
+            const toggleBtn = document.getElementById("toggleQuickBtn");
+
+            if (quickRepliesVisible) {
+                container.style.display = "flex";
+                toggleBtn.textContent = "Hide Quick Replies ▲";
+            } else {
+                container.style.display = "none";
+                toggleBtn.textContent = "Show Quick Replies ▼";
+            }
+        }
+
+        function renderLineSelectInChat(type = "next_train") {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+            wrapper.innerHTML = `<strong>Select the ${type === "destination" ? "destination" : type === "source" ? "source" : "line"}:</strong><br><br>`;
+
+            const redBtn = document.createElement("button");
+            redBtn.className = "quick-btn";
+            redBtn.innerText = "Red Line 🔴";
+            redBtn.style.backgroundColor = "#dc3545";
+            redBtn.onclick = () => {
+                wrapper.remove();
+                if (type === "source" || type === "destination") {
+                    renderStationSelectInChat("red", type);
+                } else {
+                    selectedLine = "red";
+                    awaitingLineSelect = false;
+                    renderStationSelectInChat("red", "next_train");
+                }
+            };
+
+            const blueBtn = document.createElement("button");
+            blueBtn.className = "quick-btn";
+            blueBtn.innerText = "Blue Line 🔵";
+            blueBtn.style.backgroundColor = "#007bff";
+            blueBtn.onclick = () => {
+                wrapper.remove();
+                if (type === "source" || type === "destination") {
+                    renderStationSelectInChat("blue", type);
+                } else {
+                    selectedLine = "blue";
+                    awaitingLineSelect = false;
+                    renderStationSelectInChat("blue", "next_train");
+                }
+            };
+
+            wrapper.appendChild(redBtn);
+            wrapper.appendChild(blueBtn);
+
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function renderStationSelectInChat(line, type = "next_train") {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+
+            const label =
+                type === "source"
+                    ? "source"
+                    : type === "destination"
+                        ? "destination"
+                        : "station";
+
+            wrapper.innerHTML = `<strong>Select a ${label} station from the ${capitalizeFirst(line)} Line:</strong><br><br>`;
+
+            lineStations[line].forEach(st => {
+                const btn = document.createElement("button");
+                btn.className = "quick-btn";
+                btn.innerText = st;
+                btn.onclick = () => {
+                    wrapper.remove();
+
+                    if (type === "source") {
+                        selectedSource = st;
+                        awaitingSource = false;
+                        document.getElementById("sourceDropdown").value = st;
+                        awaitingDestination = true;
+                        setTimeout(() => renderLineSelectInChat("destination"), 300);
+                        addZoraMessage(`Source station set to <strong>${st}</strong>. Now please select your destination line & station:`);
+                    } else if (type === "destination") {
+                        selectedDestination = st;
+                        if (selectedSource == selectedDestination) {
+                            addZoraMessage("Please select different source and destination station.");
+                            return;
+                        }
+                        awaitingDestination = false;
+                        document.getElementById("destinationDropdown").value = st;
+                        addZoraMessage(`Destination set to <strong>${st}</strong>.`);
+                        showJourneyConfirmButtons();
+
+                    } else {
+                        document.getElementById("chatInput").value = st;
+                        sendChat(); // for "next train" flow
+                    }
+                };
+                wrapper.appendChild(btn);
+            });
+
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function addZoraMessage(html) {
+            const chatBox = document.getElementById("chatMessages");
+            const msgDiv = document.createElement("div");
+            msgDiv.className = "zora-msg";
+            msgDiv.innerHTML = html;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            speakText(stripHtml(html));
+        }
+
+        function addUserMessage(message) {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "user-msg";
+
+            const content = document.createElement("div");
+            content.className = "msg-text";
+            content.innerHTML = message;
+
+            wrapper.appendChild(content);
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function populateDropdowns() {
+            const allStations = [...lineStations.red, ...lineStations.blue];
+            const source = document.getElementById("sourceDropdown");
+            const dest = document.getElementById("destinationDropdown");
+
+            allStations.forEach(st => {
+                const opt1 = document.createElement("option");
+                opt1.value = st;
+                opt1.text = st;
+                source.appendChild(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = st;
+                opt2.text = st;
+                dest.appendChild(opt2);
+            });
+        }
+
+        populateDropdowns(); // loading stations in dropdown
+
+        function showJourneyConfirmButtons() {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+
+            const src = selectedSource;
+            const dst = selectedDestination;
+            const msg =
+
+                addZoraMessage(`Do you want to travel from <strong>${src}</strong> to <strong>${dst}</strong>?<br><br>`);
+            const yesBtn = document.createElement("button");
+            yesBtn.className = "quick-btn";
+            yesBtn.style.backgroundColor = "#28a745";
+            yesBtn.textContent = "✅ Yes";
+            yesBtn.onclick = () => {
+                const src = selectedSource;
+                const dst = selectedDestination;
+
+                const result = findShortestRoute(src, dst);
+
+                if (!result) {
+                    addZoraMessage(`❌ Sorry, no valid route found from <strong>${src}</strong> to <strong>${dst}</strong>.`);
+                    selectedSource = null;
+                    selectedDestination = null;
+                    wrapper.remove();
+                    return;
+                }
+
+                const distance = result.distance;
+                const totalStations = result.path.length;
+
+
+                const time = result.time;
+                const fare = distance <= 2 ? 10 : distance <= 5 ? 20 : distance <= 10 ? 30 : distance <= 15 ? 40 : 50;
+
+                // Check if any station in path exists in red or blue lines
+                const pathStations = result.path;
+
+                const isRed = pathStations.some(st => lineStations.red.includes(st));
+                const isBlue = pathStations.some(st => lineStations.blue.includes(st));
+
+                let lineClass = 'red'; // default
+                if (isRed && isBlue) {
+                    lineClass = 'multi'; // for blended/mixed route
+                } else if (isBlue) {
+                    lineClass = 'blue';
+                }
+
+
+
+
+
+                document.getElementById("startBtn").click();
+                wrapper.remove();
+                const interchangeStations = ["Khemni_Chak", "Patna_Junction"];
+                const styledStations = result.path.map(st => {
+                    const nameOnly = st.replace(/Red_Line|Blue_Line/g, "").trim();
+                    const isInterchange = interchangeStations.includes(nameOnly);
+                    return `<div class="station ${isInterchange ? 'interchange' : ''}">${st}</div>`;
+                }).join("");
+
+                const stationListHTML = `
+                <div class="station-line ${lineClass}">
+                ${styledStations}
+                </div>`;
+
+                const resMsg = `
+                <div style="font-size: 14px;">
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #2196F3; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>🕒 Travel Time:</strong> ${time} minutes
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #ec407a; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>📏 Distance:</strong> ${distance.toFixed(2)} km
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #8bc34a; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>💰 Fare:</strong> ₹${fare.toFixed(1)}
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #ff9800; padding: 10px; border-radius: 6px;">
+                    <div style="margin-top: 10px;"><strong>🚉 Stations (${totalStations}):</strong></div>
+                ${stationListHTML}
+                    </div>
+                    <div style="margin-top: 10px;"><strong>✅ Have a safe journey...!</strong></div>
+                </div>
+                    `           ;
+                addZoraMessage(resMsg);
+
+                // Show next train button in chat
+                setTimeout(() => showNextTrainButtonInChat(src), 300);
+                showReverseRouteButton(src, dst); // new!
+                selectedSource = null;
+                selectedDestination = null;
+            };
+
+
+
+            const noBtn = document.createElement("button");
+            noBtn.className = "quick-btn";
+            noBtn.style.backgroundColor = "#dc3545";
+            noBtn.textContent = "❌ No";
+            noBtn.onclick = () => {
+                addZoraMessage("🚫 Journey cancelled. You can start again anytime.");
+                selectedSource = null;
+                selectedDestination = null;
+                wrapper.remove();
+            };
+
+            wrapper.appendChild(yesBtn);
+            wrapper.appendChild(noBtn);
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showNextTrainButtonInChat(stationName) {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+
+            const button = document.createElement("button");
+            button.className = "quick-btn";
+            button.innerText = `📍 Next Train from ${stationName}`;
+            button.onclick = () => {
+                const stationKey = findStationKey(stationName);
+                const now = new Date();
+
+                if (!stationKey || !scheduleData[stationKey]) {
+                    addZoraMessage(`❌ Sorry, I couldn’t find schedule for "${stationName}".`);
+                    return;
+                }
+
+                const directions = scheduleData[stationKey].directions;
+                let reply = '';
+
+                for (let dir in directions) {
+                    const dirName = terminalStations[dir] || dir;
+                    const result = trainDirection(stationName, dir);
+                    if (!result.time == "No service now") {
+                        reply += `<strong>Next train from 4 ${stationKey}:</strong><br>`;
+                        reply += result
+                            ? `→ Towards <b>${dirName}:</b> ${result.time} (in ${result.countdown})<br>`
+                            : `Towards <b>${dirName}:</b> No more trains<br>`;
+                    }
+                    else {
+                        reply = "No service now4";
+                    }
+
+                }
+
+                addZoraMessage(reply);
+                wrapper.remove(); // optional: remove after use
+            };
+
+            wrapper.appendChild(button);
+            chatBox.appendChild(wrapper);
+            //  chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function showReverseRouteButton(from, to) {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+
+            const button = document.createElement("button");
+            button.className = "quick-btn";
+            button.innerText = `🔁 `;
+            button.onclick = () => {
+                const reverseRoute = findShortestRoute(to, from);
+
+                if (!reverseRoute) {
+                    addZoraMessage(`❌ No valid route found from <strong>${to}</strong> to <strong>${from}</strong>.`);
+                    return;
+                }
+
+                const distance = reverseRoute.distance;
+                const time = reverseRoute.time;
+                const fare = distance <= 2 ? 10 : distance <= 5 ? 20 : distance <= 10 ? 30 : distance <= 15 ? 40 : 50;
+                const totalStations = reverseRoute.path.length;
+
+                const pathStations = reverseRoute.path;
+
+                const isRed = pathStations.some(st => lineStations.red.includes(st));
+                const isBlue = pathStations.some(st => lineStations.blue.includes(st));
+
+                let lineClass = 'red'; // default
+                if (isRed && isBlue) {
+                    lineClass = 'multi'; // for blended/mixed route
+                } else if (isBlue) {
+                    lineClass = 'blue';
+                }
+
+
+                const interchangeStations = ["Khemni_Chak", "Patna_Junction"];
+                const styledStations = reverseRoute.path.map(st => {
+                    const nameOnly = st.replace(/Red_Line|Blue_Line/g, "").trim();
+                    const isInterchange = interchangeStations.includes(nameOnly);
+                    return `<div class="station ${isInterchange ? 'interchange' : ''}">${st}</div>`;
+                }).join("");
+
+                const stationListHTML = `
+                <div class="station-line ${lineClass}">
+                ${styledStations}
+                </div>`;
+
+                const reply = `📏 Route from <strong>${to}</strong> to <strong>${from}</strong>:<br>
+                <div style="font-size: 14px;">
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #2196F3; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>🕒 Travel Time:</strong> ${time} minutes
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #ec407a; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>📏 Distance:</strong> ${distance.toFixed(2)} km
+                    </div>
+
+                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #8bc34a; padding: 10px; margin-bottom: 8px; border-radius: 6px;">
+                        <strong>💰 Fare:</strong> ₹${fare.toFixed(2)}
+                    </div>
+
+                                    <div style="border: 1px solid rgba(128, 128, 128, 0.3); border-left: 5px solid #ff9800; padding: 10px; border-radius: 6px;">
+                                    <div style="margin-top: 10px;"><strong>🚉 Stations (${totalStations}):</strong></div>
+                                ${stationListHTML}
+                                    </div>
+                    <div style="margin-top: 10px;"><strong>✅ Have a safe journey!</strong></div>
+                </div>
+                `;
+
+                addZoraMessage(reply);
+                setTimeout(() => showNextTrainButtonInChat(to), 300); // Optional
+            };
+
+            wrapper.appendChild(button);
+            chatBox.appendChild(wrapper);
+            // chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        document.getElementById("startBtn").addEventListener("click", function () {
+            console.log("✅ startBtn clicked from chat.");
+            // alert("🚆 Journey started successfully!");
+            // You can place your real journey logic here instead of alert
+        });
+
+
+        function showHistoryQuickReplies() {
+
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+
+            if (userQueryHistory.length === 0) {
+                wrapper.innerHTML = "🕘 No previous queries.";
+                chatBox.appendChild(wrapper);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                return;
+            }
+
+            const heading = document.createElement("div");
+            heading.innerHTML = "<strong>🕘 Your Recent Queries:</strong><br>";
+            wrapper.appendChild(heading);
+
+            userQueryHistory.forEach(query => {
+                const btn = document.createElement("button");
+                btn.className = "quick-btn";
+                btn.innerText = query;
+                btn.onclick = async () => await processUserMessage(query);
+                wrapper.appendChild(btn);
+            });
+
+            // ✅ Add clear history button
+            const clearBtn = document.createElement("button");
+            clearBtn.className = "quick-btn";
+            clearBtn.innerText = "🗑️ Clear History";
+            clearBtn.style.backgroundColor = "#e74c3c";
+            clearBtn.style.color = "#fff";
+            clearBtn.onclick = () => {
+                const confirmWrapper = document.createElement("div");
+                confirmWrapper.className = "zora-msg";
+                confirmWrapper.innerHTML = "⚠️ Are you sure you want to clear your history?";
+
+                const yesBtn = document.createElement("button");
+                yesBtn.className = "quick-btn";
+                yesBtn.innerText = "Yes";
+                yesBtn.onclick = () => {
+                    userQueryHistory.length = 0;
+                    localStorage.removeItem("zoraHistory");
+
+                    // Fade out effect
+                    confirmWrapper.classList.add("fade-out");
+                    setTimeout(() => {
+                        confirmWrapper.remove();
+                        addZoraMessage("✅ History cleared.");
+                    }, 600);
+                };
+
+                const noBtn = document.createElement("button");
+                noBtn.className = "quick-btn";
+                noBtn.innerText = "No";
+                noBtn.onclick = () => {
+                    confirmWrapper.classList.add("fade-out");
+                    setTimeout(() => confirmWrapper.remove(), 600);
+                };
+
+                confirmWrapper.appendChild(document.createElement("br"));
+                confirmWrapper.appendChild(yesBtn);
+                confirmWrapper.appendChild(noBtn);
+
+                document.getElementById("chatMessages").appendChild(confirmWrapper);
+                document.getElementById("chatMessages").scrollTop = document.getElementById("chatMessages").scrollHeight;
+            };
+
+            wrapper.appendChild(document.createElement("br")); // spacing
+            wrapper.appendChild(clearBtn);
+
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+
+
+        async function processUserMessage(msg) {
+            // ✅ Save to history
+            if (msg && msg.trim()) {
+                const clean = msg.trim();
+                if (!userQueryHistory.includes(clean)) {
+                    userQueryHistory.unshift(clean);
+                }
+                if (userQueryHistory.length > 10) {
+                    userQueryHistory.pop();
+                }
+            }
+
+            // ✅ Show user message in chat
+            addUserMessage(msg);
+
+            // ✅ Zora's response
+            const reply = await getZoraReply(msg);
+            if (reply) addZoraMessage(reply);
+        }
+
+
+        function showNearestStationConfirmButtons() {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+
+            const yesBtn = document.createElement("button");
+            yesBtn.className = "quick-btn";
+            yesBtn.innerText = "Yes";
+            yesBtn.onclick = async () => {
+                wrapper.classList.add("fade-out");
+                setTimeout(() => wrapper.remove(), 500);
+
+                // ✅ Show immediate feedback
+                addZoraMessage("Please wait while I locate the nearest station...");
+
+                // ✅ Call your location logic
+                const response = await respondWithNearestStation();
+
+                // ✅ Show the final result
+                addZoraMessage(response);
+            };
+
+
+            const noBtn = document.createElement("button");
+            noBtn.className = "quick-btn";
+            noBtn.innerText = "No";
+            noBtn.onclick = () => {
+                wrapper.classList.add("fade-out");
+                setTimeout(() => wrapper.remove(), 500);
+                addZoraMessage("Okay, location request cancelled.");
+            };
+
+            wrapper.appendChild(yesBtn);
+            wrapper.appendChild(noBtn);
+
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+
+
+        function showSettingsQuickReplyButton() {
+            const chatBox = document.getElementById("chatMessages");
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "zora-msg";
+
+            const btn = document.createElement("button");
+            btn.className = "quick-btn";
+            btn.textContent = "⚙️ Settings";
+            btn.onclick = () => {
+                document.getElementById("settingsPanel").style.display = "block";
+                const chatbotStatus = document.getElementById("chatbot").style.display;
+
+                if (chatbotStatus == "flex") {
+
+                    document.getElementById("chatbot").style.display = "none";
+                }
+            };
+
+            wrapper.appendChild(btn);
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+        }
+
+
+
+    </script>
+
+
+
+
+
+    <div id="settingsPanel" class="settings-panel" style="display:none;">
+        <h3>App Settings</h3>
+        <label for="themeSelect">Choose Theme:</label>
+        <select id="themeSelect"></select>
+        <br><br>
+        <button id="saveSettingsBtn" class="quick-btn">Save</button>
+        <button id="closeSettingsBtn" class="quick-btn">Close</button>
+    </div>
+    <script>
+        document.getElementById("openSettingsBtn").onclick = () => {
+            document.getElementById("settingsPanel").style.display = "block";
+            const chatbotStatus = document.getElementById("chatbot").style.display;
+            if (chatbotStatus == "flex") {
+
+                document.getElementById("chatbot").style.display = "none";
+            }
+
+
+        };
+
+        document.getElementById("closeSettingsBtn").onclick = () => {
+            document.getElementById("settingsPanel").style.display = "none";
+        };
+
+        document.getElementById("saveSettingsBtn").onclick = () => {
+            const selected = document.getElementById("themeSelect").value;
+            localStorage.setItem("themeMode", selected);
+            currentThemeMode = selected;
+            document.getElementById("settingsPanel").style.display = "none";
+            addZoraMessage(`✅ Theme set to <strong>${selected}</strong>.`);
+        };
+
+        //Finding Next Station
+        function trainDirection(stationName, direction) {
+            const station = scheduleData[stationName];
+            const nameEl = document.getElementById('stationName');
+            const timeEl = document.getElementById('nextTrainTime');
+            const countdownEl = document.getElementById('trainCountdown');
+
+            if (!nameEl || !timeEl || !countdownEl) {
+                console.warn("Missing one or more target DOM elements.");
+                return { time: null, countdown: null };
+            }
+
+            if (!station) {
+                nameEl.innerText = stationName;
+                timeEl.innerText = "Station not found";
+                countdownEl.innerText = "";
+                return { time: "Station not found", countdown: null };
+            }
+
+            if (!direction || !station.directions[direction]) {
+                nameEl.innerText = stationName;
+                timeEl.innerText = "Direction not available";
+                countdownEl.innerText = "";
+                return { time: "Direction not available", countdown: null };
+            }
+
+            const stationDirection = station.directions[direction];
+            const next = getNextTrain(stationDirection);
+
+            nameEl.innerText = stationName;
+
+            let timeText;
+            let countdownText;
+
+            if (next.time === "No more trains today" || next.time === "No service now") {
+                timeText = next.time;
+                countdownText = "";
+            } else {
+                timeText = formatTime12H(next.time);
+                countdownText = typeof next.countdown === "number" ? `${next.countdown} minutes` : "";
+            }
+
+            timeEl.innerText = timeText;
+            countdownEl.innerText = countdownText;
+
+            // ✅ Return the values
+            return { time: timeText, countdown: countdownText };
+        }
+
+
+        function getNextTrain(stationDirection) {
+            const now = new Date();
+            const nowMins = now.getHours() * 60 + now.getMinutes();
+
+            const firstMins = timeStrToMinutes(stationDirection.first_train);
+            const lastMins = timeStrToMinutes(stationDirection.last_train);
+
+            if (nowMins < firstMins) {
+                const diff = firstMins - nowMins;
+                return { time: stationDirection.first_train, countdown: diff };
+            }
+
+            if (nowMins > lastMins + gracePeriod) {
+                return { time: "No more trains today", countdown: null };
+            }
+
+            const interval = getInterval(stationDirection.frequency, nowMins);
+            if (!interval) {
+                return { time: "No service now", countdown: null };
+            }
+
+            const minsSinceFirst = nowMins - firstMins;
+            const nextTrainMins = firstMins + Math.ceil(minsSinceFirst / interval) * interval;
+
+            const nextTimeH = Math.floor(nextTrainMins / 60).toString().padStart(2, '0');
+            const nextTimeM = (nextTrainMins % 60).toString().padStart(2, '0');
+
+            return {
+                time: `${nextTimeH}:${nextTimeM}`,
+                countdown: nextTrainMins - nowMins
+            };
+        }
+
+        function formatTime12H(timeStr) {
+            const [hour, minute] = timeStr.split(":").map(Number);
+            const ampm = hour >= 12 ? "PM" : "AM";
+            const hh = hour % 12 || 12;
+            return `${hh}:${minute.toString().padStart(2, '0')} ${ampm}`;
+        }
+
+        function timeStrToMinutes(timeStr) {
+            const [h, m] = timeStr.split(":").map(Number);
+            return h * 60 + m;
+        }
+
+        // Determine frequency interval (supports time ranges)
+        function getInterval(frequency, currentMins) {
+            if (typeof frequency === "number") return frequency;
+
+            for (const range of frequency) {
+                if (!range.start || !range.end || typeof range.interval !== "number") {
+                    console.warn("Invalid frequency range entry:", range);
+                    continue;
+                }
+
+                const from = timeStrToMinutes(range.start);
+                const to = timeStrToMinutes(range.end);
+                if (currentMins >= from && currentMins <= to) {
+                    return range.interval;
+                }
+            }
+
+            return null; // No service
+        }
+    </script>
+
+
+    <!-- Installation Button -->
+    <button id="installBtn" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        📲 Install App
+    </button>
+
+    <!-- Version Display -->
+    <div style="position: fixed; bottom: 0; left: 0; padding: 5px 10px; font-size: 12px; color: gray;">
+        Version: <span id="appVersion">Loading...</span>
+    </div>
+
+    <!-- Link to script -->
+    <script src="install.js"></script>
+</body>
+
+</html>
