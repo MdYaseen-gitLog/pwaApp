@@ -1,0 +1,947 @@
+{
+  "Danapur": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:00",
+        "last_train": "23:55",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          },
+          {
+            "start": "22:00",
+            "end": "23:55",
+            "interval": 15
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:00",
+        "last_train": "23:55",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 10
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          },
+          {
+            "start": "22:00",
+            "end": "23:55",
+            "interval": 15
+          }
+        ]
+      }
+    }
+  },
+  "Saguna Mor": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:02",
+        "last_train": "22:02",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:02",
+        "last_train": "22:02",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "RPS Mor": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:04",
+        "last_train": "22:04",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:04",
+        "last_train": "22:04",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Patliputra": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:06",
+        "last_train": "22:06",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:06",
+        "last_train": "22:06",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Rukanpura": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:08",
+        "last_train": "22:08",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:08",
+        "last_train": "22:08",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Raja Bazar": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:10",
+        "last_train": "22:10",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:10",
+        "last_train": "22:10",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Patna Zoo": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:12",
+        "last_train": "22:12",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:12",
+        "last_train": "22:12",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Vikas Bhawan": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:14",
+        "last_train": "22:14",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:14",
+        "last_train": "22:14",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Vidyut Bhawan": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:16",
+        "last_train": "22:16",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:16",
+        "last_train": "22:16",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Patna_Junction Red_Line": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:18",
+        "last_train": "22:18",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:18",
+        "last_train": "22:18",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Mithapur": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:20",
+        "last_train": "22:20",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:20",
+        "last_train": "22:20",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Ramkrishna Nagar": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:22",
+        "last_train": "22:22",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:22",
+        "last_train": "22:22",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Jaganpura": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:24",
+        "last_train": "22:24",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:24",
+        "last_train": "22:24",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  "Khemni_Chak Red_Line": {
+    "color": "red",
+    "directions": {
+      "East": {
+        "first_train": "06:26",
+        "last_train": "22:26",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      },
+      "West": {
+        "first_train": "06:26",
+        "last_train": "22:26",
+        "frequency": [
+          {
+            "start": "06:00",
+            "end": "10:00",
+            "interval": 10
+          },
+          {
+            "start": "10:00",
+            "end": "17:00",
+            "interval": 15
+          },
+          {
+            "start": "17:00",
+            "end": "22:00",
+            "interval": 10
+          }
+        ]
+      }
+    }
+  },
+  
+  "Patna_Junction Blue_Line": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:00",
+        "last_train": "22:00",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:00",
+        "last_train": "22:00",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Akashvani": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:02",
+        "last_train": "22:02",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:02",
+        "last_train": "22:02",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Gandhi Maidan": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:04",
+        "last_train": "22:04",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:04",
+        "last_train": "22:04",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "PMCH": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:06",
+        "last_train": "22:06",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:06",
+        "last_train": "22:06",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "University": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:08",
+        "last_train": "22:08",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:08",
+        "last_train": "22:08",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Moin-ul-Haq Stadium": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:10",
+        "last_train": "22:10",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:10",
+        "last_train": "22:10",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Rajendra Nagar": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:12",
+        "last_train": "22:12",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:12",
+        "last_train": "22:12",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Malahi Pakri": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:14",
+        "last_train": "22:14",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:14",
+        "last_train": "22:14",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Khemni_Chak Blue_Line": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:16",
+        "last_train": "22:16",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:16",
+        "last_train": "22:16",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Bhootnath": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:18",
+        "last_train": "22:18",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:18",
+        "last_train": "22:18",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "Zero Mile": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:20",
+        "last_train": "22:20",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:20",
+        "last_train": "22:20",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  },
+  "New ISBT": {
+    "color": "blue",
+    "directions": {
+      "North": {
+        "first_train": "06:22",
+        "last_train": "22:22",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      },
+      "South": {
+        "first_train": "06:22",
+        "last_train": "22:22",
+        "frequency": [
+          { "start": "06:00", "end": "10:00", "interval": 10 },
+          { "start": "10:00", "end": "17:00", "interval": 15 },
+          { "start": "17:00", "end": "22:00", "interval": 10 }
+        ]
+      }
+    }
+  }
+}

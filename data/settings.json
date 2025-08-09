@@ -1,0 +1,74 @@
+{
+    "theme": {
+        "zora": {
+            "label": "🤖 Zora",
+            "mode": "zora",
+            "primaryColor": "#007bff",
+            "backgroundColor": "#f4f9ff",
+            "textColor": "#1a1a1a",
+            "zoraMessageBg": "#e6f0ff",
+            "userMessageBg": "#d0e8ff",
+            "fontFamily": "'Segoe UI', sans-serif"
+        },
+        "light": {
+            "label": "🌞 Light",
+            "mode": "light",
+            "primaryColor": "#3498db",
+            "backgroundColor": "#ffffff",
+            "textColor": "#333333",
+            "zoraMessageBg": "#f1f1f1",
+            "userMessageBg": "#d1ecf1",
+            "fontFamily": "Arial, sans-serif"
+        },
+        "dark": {
+            "label": "🌙 Dark",
+            "mode": "dark",
+            "primaryColor": "#2ecc71",
+            "backgroundColor": "#121212",
+            "textColor": "#f0f0f0",
+            "zoraMessageBg": "#2a2a2a",
+            "userMessageBg": "#1e90ff",
+            "fontFamily": "Arial, sans-serif"
+        },
+        "sepia": {
+            "label": "🍁 Sepia",
+            "mode": "sepia",
+            "primaryColor": "#a0522d",
+            "backgroundColor": "#f4ecd8",
+            "textColor": "#5b4636",
+            "zoraMessageBg": "#f9f1e7",
+            "userMessageBg": "#e9d8b8",
+            "fontFamily": "Georgia, serif"
+        },
+        "coolblue": {
+            "label": "🧊 Cool Blue",
+            "mode": "coolblue",
+            "primaryColor": "#1abc9c",
+            "backgroundColor": "#eafafa",
+            "textColor": "#2c3e50",
+            "zoraMessageBg": "#d0f0f7",
+            "userMessageBg": "#aeecef",
+            "fontFamily": "'Segoe UI', sans-serif"
+        },
+        "contrast": {
+            "label": "🎨 High Contrast",
+            "mode": "contrast",
+            "primaryColor": "#ffcc00",
+            "backgroundColor": "#000000",
+            "textColor": "#ffffff",
+            "zoraMessageBg": "#333333",
+            "userMessageBg": "#555555",
+            "fontFamily": "'Courier New', monospace"
+        },
+        "rainy": {
+            "label": "🌧️ Rainy Weather",
+            "mode": "rainy",
+            "primaryColor": "#4a90e2",
+            "backgroundColor": "#dfe6f3",
+            "textColor": "#2c3e50",
+            "zoraMessageBg": "#e4ebf5",
+            "userMessageBg": "#cce0f4",
+            "fontFamily": "'Segoe UI', sans-serif"
+        }
+    }
+}
