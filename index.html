@@ -960,7 +960,7 @@
                     for (let dir in directions) {
                         const dirName = terminalStations[dir] || dir;
                         const result = trainDirection(stationName, dir);
-                        if (!result.time == "No service now") {
+                        if (result.time !== "No service now") {
                             res += `<strong>Next train from 1 ${stationKey}:</strong><br>`;
                             res += result ? `Towards <b>${dirName}:</b> ${result.time} (in ${result.countdown})<br>` : `• ${dir}: No more trains<br>`;
                         }
@@ -1105,7 +1105,7 @@
                     for (let dir in directions) {
                         const result = trainDirection(stationKey, dir);
                         console.log(result.time);
-                        if (!result.time == "No service now") {
+                        if (result.time !== "No service now") {
                             const dirName = terminalStations[dir] || dir;
                             res += `<strong>Next train from 2 ${stationKey}:</strong><br>`;
                             res += result
@@ -1172,7 +1172,7 @@
                 for (let dir in directions) {
                     const result = trainDirection(stationname, dir);
                     const dirName = terminalStations[dir] || dir;
-                    if (!result.time == "No service now") {
+                    if (result.time !== "No service now") {
                         res += `<strong>Next train from 3 ${stationKey}:</strong><br>`;
                         res += result ? `Towards <b>${dirName}:</b> ${result.time} (in ${result.countdown})<br>` : `Towards <b>${dirName}:</b> No more trains<br>`;
                     }
@@ -1836,7 +1836,7 @@
                 for (let dir in directions) {
                     const dirName = terminalStations[dir] || dir;
                     const result = trainDirection(stationName, dir);
-                    if (!result.time == "No service now") {
+                    if (result.time !== "No service now") {
                         reply += `<strong>Next train from 4 ${stationKey}:</strong><br>`;
                         reply += result
                             ? `→ Towards <b>${dirName}:</b> ${result.time} (in ${result.countdown})<br>`
@@ -2277,5 +2277,6 @@
     <!-- Link to script -->
     <script src="install.js"></script>
 </body>
+
 
 </html>
