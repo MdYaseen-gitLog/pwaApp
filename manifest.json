@@ -1,5 +1,5 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "name": "PWA App",
   "short_name": "PWAApp",
   "start_url": "/pwaApp/index.html",
@@ -49,3 +49,4 @@
 
   ]
 }
+
