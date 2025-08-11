@@ -5,4 +5,31 @@ body {
   nav a {
     margin-right: 10px;
   }
-  
+
+  #installBtn {
+        display: none;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 12px 18px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    #installBtn:hover {
+        background-color: #0056b3;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #installBtn:active {
+        transform: scale(0.97);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    }
