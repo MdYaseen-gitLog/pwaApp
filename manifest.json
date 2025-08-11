@@ -1,7 +1,7 @@
 {
-  "version": "1.7.0",
-  "name": "PWA App",
-  "short_name": "PWAApp",
+  "version": "1.0.0",
+  "name": "Zora AI- Patna Metro",
+  "short_name": "Zora",
   "start_url": "/pwaApp/index.html",
   "scope": "/pwaApp/",
   "display": "standalone",
@@ -9,12 +9,12 @@
   "theme_color": "#1976d2",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "icons/zora-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/zora-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -49,4 +49,5 @@
 
   ]
 }
+
 
