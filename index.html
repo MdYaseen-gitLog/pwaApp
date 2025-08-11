@@ -21,6 +21,7 @@
             navigator.serviceWorker.register('service-worker.js');
         }
     </script>
+    <script src="config.js"></script>
     <title>Zora Chatbot</title>
     <style>
        html,
@@ -530,7 +531,7 @@
         let selectedDestination = null;
         const userQueryHistory = [];
 
-        const OPENWEATHER_API_KEY = "e8d83feabbee14a0c1323f56e4c48145"; // 🔐 Replace this
+       
 
         const terminalStations = {
             'East': 'Khemni Chak',
@@ -1200,7 +1201,7 @@
 
         async function getWeather(cityName) {
             try {
-                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${OPENWEATHER_API_KEY}&units=metric`);
+                const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${WEATHER_DATA}&units=metric`);
                 const data = await res.json();
                 if (data.cod !== 200) return `Couldn't fetch weather for ${cityName}.`;
 
@@ -2240,6 +2241,7 @@
 
 
 </html>
+
 
 
 
