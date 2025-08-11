@@ -9,8 +9,8 @@ body {
   #installBtn {
         display: none;
         position: fixed;
-        top: 20px;
-        right: 20px;
+        top: 66px;
+        right: 10px;
         z-index: 1000;
         background-color: #007bff;
         color: white;
@@ -33,3 +33,4 @@ body {
         transform: scale(0.97);
         box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
     }
+
