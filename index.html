@@ -23,23 +23,31 @@
     </script>
     <title>Zora Chatbot</title>
     <style>
+       html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            /* stop browser scroll */
+        }
+
+
         /* Chat toggle button */
         .chatbot-container {
-            position: fixed;
-            bottom: 90px;
-            /* Leaves room for the toggle button below */
-            right: 20px;
-            width: 350px;
-            height: 500px;
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            /* Full screen */
             background: white;
-            border-radius: 10px;
-            display: none;
+            display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             font-family: Arial, sans-serif;
-            z-index: 1001;
-            /* Higher than toggle */
         }
+
+
+
+
 
         .chat-toggle {
             position: fixed;
@@ -102,54 +110,73 @@
 
 
         #chatMessages {
-            flex-grow: 1;
+            flex: 1;
+            /* Fill remaining space */
             overflow-y: auto;
             padding: 10px;
             background: #f7f7f7;
             font-size: 14px;
         }
 
+
+        #controlButtons,
+        #quickReplies,
         .chat-input-area {
             display: flex;
-            padding: 10px;
+            align-items: center;
+            /* vertically center */
+            gap: 6px;
+            /* space between elements */
+            padding: 8px;
             border-top: 1px solid #ddd;
-            gap: 5px;
+            background: white;
         }
 
         .chat-input-area input[type="text"] {
-            flex-grow: 1;
+            flex: 1;
+            /* take remaining width */
             padding: 8px;
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            height: 40px;
+            /* consistent height */
+            box-sizing: border-box;
         }
 
-        .chat-input-area button {
-            padding: 4px 8px;
-            font-size: 12px;
+        .chat-input-area button,
+        .chat-input-area .voice-button {
+            height: 40px;
+            /* same height as input */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
             border: none;
-            background: #007bff;
-            color: white;
             border-radius: 4px;
             cursor: pointer;
         }
+
+        .chat-input-area button {
+            background: #007bff;
+            color: white;
+        }
+
+
+
 
         .chat-input-area button:hover {
             background: #0056b3;
         }
 
         /* Mobile responsiveness */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             .chatbot-container {
-                width: 90%;
                 height: 100dvh;
-                /* Dynamic viewport height */
-                max-height: 90dvh;
-                bottom: 0;
-                right: 5%;
-                border-radius: 10px 10px 0 0;
+                /* dynamic viewport height for mobile */
             }
         }
+
 
         .chat-input-area button:nth-child(2) {
             background-color: white;
@@ -265,6 +292,8 @@
             padding: 10px;
             background-color: #f1f1f1;
             border-top: 1px solid #ccc;
+            border-radius: 8px;
+            /* margin: bottom 4px; */
         }
 
         .quick-btn {
@@ -452,36 +481,11 @@
 </head>
 
 <body>
-    <div style="padding: 10px; margin: 10px; border: 1px solid #ccc; border-radius: 8px;">
-        <label>From:
-            <select id="sourceDropdown">
-                <option value="">Select Source</option>
-            </select>
-        </label>
-        <label style="margin-left: 10px;">To:
-            <select id="destinationDropdown">
-                <option value="">Select Destination</option>
-            </select>
-        </label>
-        <button id="startBtn" style="margin-left: 10px;">Start Journey</button>
-    </div>
-    <!-- Make sure this is in your HTML -->
-    <div id="stationName"></div>
-    <div id="nextTrainTime"></div>
-    <div id="trainCountdown"></div>
-
-
-
-    <button class="chat-toggle" onclick="toggleChatbot()">
-        <img src="icons/zora-icon-48.png" alt="Zora Icon" class="zora-icon">
-    </button>
-
-    <div class="chatbot-container" id="chatbot">
+    <div class="chatbot-container" id="chatbot" style="display: flex;">
         <div class="chat-header">
 
             Zora AI - Patna Metro Assistant
             <button id="muteBtn" onclick="toggleMute()" class="btn btn-primary">🔊</button>
-            <button class="chat-close" onclick="toggleChatbot()">×</button>
         </div>
         <div id="chatMessages">
             <div><strong>Zora:</strong> Hi, I’m Zora, your Patna Metro assistant.</div>
@@ -506,7 +510,7 @@
             </div>
 
             <button id="voiceBtn" onclick="startVoiceInput()" class="voice-button">
-                <img src="icons/chatmic.png" alt="mic" width="24" height="24">
+                <img src="data/icons/chatmic.png" alt="mic" width="24" height="24">
             </button>
             <button onclick="sendChat()">Send</button>
 
@@ -547,7 +551,7 @@
             .then(data => {
                 scheduleData = data;
                 // Call function only after data is ready
-                trainDirection("Vikas Bhawan", "West");
+                //trainDirection("Vikas Bhawan", "West");
             })
             .catch(err => {
                 console.error("Failed to load schedule:", err);
@@ -611,10 +615,7 @@
             };
         }
 
-        function toggleChatbot() {
-            const bot = document.getElementById("chatbot");
-            bot.style.display = bot.style.display === 'none' || bot.style.display === '' ? 'flex' : 'none';
-        }
+
 
         async function sendChat() {
             const input = document.getElementById("chatInput");
@@ -1623,7 +1624,7 @@
                     if (type === "source") {
                         selectedSource = st;
                         awaitingSource = false;
-                        document.getElementById("sourceDropdown").value = st;
+
                         awaitingDestination = true;
                         setTimeout(() => renderLineSelectInChat("destination"), 300);
                         addZoraMessage(`Source station set to <strong>${st}</strong>. Now please select your destination line & station:`);
@@ -1634,7 +1635,6 @@
                             return;
                         }
                         awaitingDestination = false;
-                        document.getElementById("destinationDropdown").value = st;
                         addZoraMessage(`Destination set to <strong>${st}</strong>.`);
                         showJourneyConfirmButtons();
 
@@ -1675,25 +1675,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        function populateDropdowns() {
-            const allStations = [...lineStations.red, ...lineStations.blue];
-            const source = document.getElementById("sourceDropdown");
-            const dest = document.getElementById("destinationDropdown");
 
-            allStations.forEach(st => {
-                const opt1 = document.createElement("option");
-                opt1.value = st;
-                opt1.text = st;
-                source.appendChild(opt1);
-
-                const opt2 = document.createElement("option");
-                opt2.value = st;
-                opt2.text = st;
-                dest.appendChild(opt2);
-            });
-        }
-
-        populateDropdowns(); // loading stations in dropdown
 
         function showJourneyConfirmButtons() {
             const chatBox = document.getElementById("chatMessages");
@@ -1748,7 +1730,7 @@
 
 
 
-                document.getElementById("startBtn").click();
+
                 wrapper.remove();
                 const interchangeStations = ["Khemni_Chak", "Patna_Junction"];
                 const styledStations = result.path.map(st => {
@@ -1934,11 +1916,7 @@
             // chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        document.getElementById("startBtn").addEventListener("click", function () {
-            console.log("✅ startBtn clicked from chat.");
-            // alert("🚆 Journey started successfully!");
-            // You can place your real journey logic here instead of alert
-        });
+
 
 
         function showHistoryQuickReplies() {
@@ -2125,11 +2103,7 @@
     <script>
         document.getElementById("openSettingsBtn").onclick = () => {
             document.getElementById("settingsPanel").style.display = "block";
-            const chatbotStatus = document.getElementById("chatbot").style.display;
-            if (chatbotStatus == "flex") {
 
-                document.getElementById("chatbot").style.display = "none";
-            }
 
 
         };
@@ -2149,33 +2123,22 @@
         //Finding Next Station
         function trainDirection(stationName, direction) {
             const station = scheduleData[stationName];
-            const nameEl = document.getElementById('stationName');
-            const timeEl = document.getElementById('nextTrainTime');
-            const countdownEl = document.getElementById('trainCountdown');
 
-            if (!nameEl || !timeEl || !countdownEl) {
-                console.warn("Missing one or more target DOM elements.");
-                return { time: null, countdown: null };
-            }
+
+
 
             if (!station) {
-                nameEl.innerText = stationName;
-                timeEl.innerText = "Station not found";
-                countdownEl.innerText = "";
                 return { time: "Station not found", countdown: null };
             }
 
             if (!direction || !station.directions[direction]) {
-                nameEl.innerText = stationName;
-                timeEl.innerText = "Direction not available";
-                countdownEl.innerText = "";
                 return { time: "Direction not available", countdown: null };
             }
 
             const stationDirection = station.directions[direction];
             const next = getNextTrain(stationDirection);
 
-            nameEl.innerText = stationName;
+
 
             let timeText;
             let countdownText;
@@ -2188,8 +2151,6 @@
                 countdownText = typeof next.countdown === "number" ? `${next.countdown} minutes` : "";
             }
 
-            timeEl.innerText = timeText;
-            countdownEl.innerText = countdownText;
 
             // ✅ Return the values
             return { time: timeText, countdown: countdownText };
@@ -2279,4 +2240,5 @@
 
 
 </html>
+
 
