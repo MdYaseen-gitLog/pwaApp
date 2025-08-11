@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pwaApp-cache-v1.7.0';
+const CACHE_NAME = 'zora-cache-v1.0.0';
 
 const STATIC_ASSETS = [
   '/pwaApp/',
@@ -9,8 +9,8 @@ const STATIC_ASSETS = [
   '/pwaApp/settings.html',
   '/pwaApp/style.css',
   '/pwaApp/offline.html',
-  '/pwaApp/icons/icon-192.png',
-  '/pwaApp/icons/icon-512.png',
+  '/pwaApp/icons/zora-192.png',
+  '/pwaApp/icons/zora-512.png',
   '/pwaApp/icons/chatmic.png',
   '/pwaApp/icons/zora-icon-48.png',
   '/pwaApp/icons/raindrops.gif',
@@ -84,5 +84,6 @@ self.addEventListener('fetch', (event) => {
     )
   );
 });
+
 
 
