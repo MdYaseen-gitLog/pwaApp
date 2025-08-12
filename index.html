@@ -362,22 +362,107 @@
             }
         }
 
-        .settings-panel {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: #fefefe;
+      .settings-panel {
+            position: absolute;
+            bottom: 60px;
+            right: 10px;
+            background: #fff;
             border: 1px solid #ccc;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             z-index: 1000;
+            width: 220px;
+            overflow: hidden;
+            transform-origin: top;
+            animation: none;
         }
+
+        .settings-panel button {
+            display: block;
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 6px;
+            background: #d147f8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .settings-panel button:hover {
+            background: #b83ad0;
+        }
+
+        /* Slide animations */
+        @keyframes slideDown {
+            from {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+
+            to {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+        }
+
 
         .settings-panel select {
             width: 100%;
             padding: 6px;
             margin-top: 4px;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .settings-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            position: relative;
+            background: none !important;
+            /* No background */
+            border: none;
+            /* No border */
+            font-size: 20px;
+            /* Size of the X */
+            font-weight: bold;
+            /* Bold */
+            color: red !important;
+            /* Red color */
+            cursor: pointer !important;
+            /* Pointer on hover */
+            padding: 0;
+            left: 80px;
+            /* No extra padding */
+            text-align: right;
+        }
+
+        .close-btn:hover {
+            color: darkred;
+            /* Darker red on hover */
         }
 
         #chatMessages.rainy-theme::before {
@@ -496,8 +581,6 @@
         <div id="map" style="height: 260px; border-top: 1px solid #ddd; display: none;"></div>
         <div id="controlButtons" style="margin-top: 10px; text-align: center;">
             <button class="control-btn" onclick="toggleQuickReplies()" id="toggleQuickBtn">Show Quick Replies</button>
-            <button class="control-btn" onclick="showHistoryQuickReplies()">🕘 History</button>
-            <button class="control-btn" onclick="clearChat()">Clear Chat</button>
             <button class="control-btn" id="openSettingsBtn" class="quick-btn">⚙️</button>
         </div>
 
@@ -2093,13 +2176,21 @@
 
 
 
-    <div id="settingsPanel" class="settings-panel" style="display:none;">
-        <h3>App Settings</h3>
+<div id="settingsPanel" class="settings-panel" style="display:none;">
+        <div class="settings-header">
+            <h3>App&nbsp;Settings</h3>
+            <button id="closeSettingsBtn" class="close-btn">✖</button>
+        </div>
+
+        <button class="control-btn" onclick="showHistoryQuickReplies()">🕘 History</button>
+        <button class="control-btn" onclick="clearChat()">🗑️ Clear Chat</button>
+        <hr>
+
         <label for="themeSelect">Choose Theme:</label>
         <select id="themeSelect"></select>
+
         <br><br>
-        <button id="saveSettingsBtn" class="quick-btn">Save</button>
-        <button id="closeSettingsBtn" class="quick-btn">Close</button>
+        <button id="saveSettingsBtn" class="control-btn">💾 Save</button>
     </div>
     <script>
         document.getElementById("openSettingsBtn").onclick = () => {
@@ -2241,6 +2332,7 @@
 
 
 </html>
+
 
 
 
