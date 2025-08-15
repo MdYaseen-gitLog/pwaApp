@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.2.0",
   "name": "Zora AI- Patna Metro",
   "short_name": "Zora",
   "start_url": "/pwaApp/index.html",
@@ -20,6 +20,7 @@
     }
   ]
 }
+
 
 
 
