@@ -1,13 +1,10 @@
-const CACHE_NAME = 'zora-cache-v1.0.0';
+const CACHE_NAME = 'zora-cache-v1.2.0';
 
 const STATIC_ASSETS = [
   // '/pwaApp/',
   '/pwaApp/index.html',
-  '/pwaApp/dashboard.html',
-  '/pwaApp/reports.html',
-  '/pwaApp/analytics.html',
-  '/pwaApp/settings.html',
   '/pwaApp/style.css',
+  '/pwaApp/install.js',
   '/pwaApp/offline.html',
   '/pwaApp/icons/zora-192.png',
   '/pwaApp/icons/zora-512.png',
@@ -84,6 +81,7 @@ self.addEventListener('fetch', (event) => {
     )
   );
 });
+
 
 
 
