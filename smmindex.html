@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMM Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and basic styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #1f2937;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 1rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #00bcd4;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(to right, #00bcd4, #2196f3);
+            color: #fff;
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero button {
+            padding: 0.75rem 2rem;
+            border: none;
+            background-color: #fff;
+            color: #2196f3;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .hero button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Services Section */
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 4rem 2rem;
+        }
+
+        .service-card {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .service-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .service-card p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1f2937;
+            color: #fff;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav {
+                margin-top: 0.5rem;
+            }
+
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SMM Panel</h1>
+        <nav>
+            <a href="#services">Services</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h2>Boost Your Social Media Instantly</h2>
+        <p>Get likes, followers, views, and more with our professional SMM services.</p>
+        <button>Get Started</button>
+    </section>
+
+    <section class="services" id="services">
+        <div class="service-card">
+            <h3>Instagram Followers</h3>
+            <p>Increase your Instagram followers quickly and safely.</p>
+        </div>
+        <div class="service-card">
+            <h3>YouTube Views</h3>
+            <p>Get more views on your videos and grow your channel.</p>
+        </div>
+        <div class="service-card">
+            <h3>Facebook Likes</h3>
+            <p>Boost your page and posts with real engagement.</p>
+        </div>
+        <div class="service-card">
+            <h3>Twitter Retweets</h3>
+            <p>Enhance your social presence with organic retweets.</p>
+        </div>
+    </section>
+<script>
+    const apiKey = "c18e428e39003765171801e67d901eb5";
+const baseUrl = "https://abeehasmm.com/api/v2";
+
+// Example: Get list of services
+fetch(`${baseUrl}?key=${apiKey}&action=balance`)
+    .then(response => response.json())
+    .then(data => {
+        console.log("Services:", data);
+    })
+    .catch(error => {
+        console.error("Error fetching data:", error);
+    });
+
+</script>
+    <footer>
+        &copy; 2025 SMM Panel. All rights reserved.
+    </footer>
+
+</body>
+</html>
