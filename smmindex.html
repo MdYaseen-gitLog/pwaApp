@@ -1,196 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMM Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Reset and basic styling */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AbeehaSMM API Test Page</title>
 
-        body {
-            background-color: #f4f6f8;
-            color: #333;
-        }
-
-        /* Header */
-        header {
-            background-color: #1f2937;
-            color: #fff;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            font-size: 1.5rem;
-        }
-
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-left: 1rem;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #00bcd4;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(to right, #00bcd4, #2196f3);
-            color: #fff;
-        }
-
-        .hero h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        .hero button {
-            padding: 0.75rem 2rem;
-            border: none;
-            background-color: #fff;
-            color: #2196f3;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .hero button:hover {
-            transform: scale(1.05);
-        }
-
-        /* Services Section */
-        .services {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            padding: 4rem 2rem;
-        }
-
-        .service-card {
-            background-color: #fff;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-
-        .service-card h3 {
-            margin-bottom: 1rem;
-            font-size: 1.25rem;
-        }
-
-        .service-card p {
-            font-size: 1rem;
-            color: #666;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #1f2937;
-            color: #fff;
-            text-align: center;
-            padding: 2rem;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            nav {
-                margin-top: 0.5rem;
-            }
-
-            .hero h2 {
-                font-size: 1.5rem;
-            }
-
-            .hero p {
-                font-size: 1rem;
-            }
-        }
-    </style>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        max-width: 900px;
+        margin: auto;
+        background: #f5f5f5;
+    }
+    h2 { margin-top: 40px; }
+    button {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    button:hover { background: #0056b3; }
+    textarea, input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 15px;
+    }
+    #result {
+        white-space: pre-wrap;
+        background: white;
+        padding: 15px;
+        margin-top: 20px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+</style>
 </head>
+
 <body>
 
-    <header>
-        <h1>SMM Panel</h1>
-        <nav>
-            <a href="#services">Services</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </header>
+<h1>AbeehaSMM API Test Panel</h1>
 
-    <section class="hero">
-        <h2>Boost Your Social Media Instantly</h2>
-        <p>Get likes, followers, views, and more with our professional SMM services.</p>
-        <button>Get Started</button>
-    </section>
+<label>API Key:</label>
+<input id="apiKey" type="text" placeholder="Enter your API key">
 
-    <section class="services" id="services">
-        <div class="service-card">
-            <h3>Instagram Followers</h3>
-            <p>Increase your Instagram followers quickly and safely.</p>
-        </div>
-        <div class="service-card">
-            <h3>YouTube Views</h3>
-            <p>Get more views on your videos and grow your channel.</p>
-        </div>
-        <div class="service-card">
-            <h3>Facebook Likes</h3>
-            <p>Boost your page and posts with real engagement.</p>
-        </div>
-        <div class="service-card">
-            <h3>Twitter Retweets</h3>
-            <p>Enhance your social presence with organic retweets.</p>
-        </div>
-    </section>
+<h2>1. Get Balance</h2>
+<button onclick="getBalance()">Get Balance</button>
+
+<h2>2. Get Services</h2>
+<button onclick="getServices()">Load Services</button>
+
+<h2>3. Check Order Status</h2>
+<input id="orderId" type="text" placeholder="Enter order ID">
+<button onclick="checkStatus()">Check Status</button>
+
+<h2>Output</h2>
+<div id="result">Waiting for request...</div>
+
 <script>
-    const apiKey = "c18e428e39003765171801e67d901eb5";
-const baseUrl = "https://abeehasmm.com/api/v2";
+const API_URL = "https://abeehasmm.com/api/v2";
 
-// Example: Get list of services
-fetch(`${baseUrl}?key=${apiKey}&action=balance`)
-    .then(response => response.json())
-    .then(data => {
-        console.log("Services:", data);
-    })
-    .catch(error => {
-        console.error("Error fetching data:", error);
+// helper for API POST
+async function apiRequest(params) {
+    const apiKey = document.getElementById("apiKey").value.trim();
+    if (!apiKey) return alert("Enter your API key!");
+
+    params.append("key", apiKey);
+
+    const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString(),
     });
 
+    return res.json();
+}
+
+// get balance
+async function getBalance() {
+    const params = new URLSearchParams();
+    params.append("action", "balance");
+
+    const data = await apiRequest(params);
+    document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+}
+
+// get services
+async function getServices() {
+    const params = new URLSearchParams();
+    params.append("action", "services");
+
+    const data = await apiRequest(params);
+    document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+}
+
+// check status
+async function checkStatus() {
+    const id = document.getElementById("orderId").value.trim();
+    if (!id) return alert("Enter order ID!");
+
+    const params = new URLSearchParams();
+    params.append("action", "status");
+    params.append("order", id);
+
+    const data = await apiRequest(params);
+    document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+}
 </script>
-    <footer>
-        &copy; 2025 SMM Panel. All rights reserved.
-    </footer>
 
 </body>
 </html>
