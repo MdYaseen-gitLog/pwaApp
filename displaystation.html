@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stations List</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Stations List</h1>
+  <table id="stationsTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Color</th>
+        <th>Description</th>
+        <th>Layout</th>
+        <th>Status</th>
+        <th>Lat</th>
+        <th>Lng</th>
+        <th>First Train</th>
+        <th>Last Train</th>
+        <th>Frequency</th>
+        <th>Gates</th>
+        <th>Gate Info</th>
+        <th>Facilities</th>
+        <th>Nearby</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const API_BASE = "https://stninfo.yaseenmd965.workers.dev"; // Replace with your Worker URL
+
+    async function loadStations() {
+      const res = await fetch(`${API_BASE}/stations`);
+      const stations = await res.json();
+
+      const tbody = document.querySelector("#stationsTable tbody");
+      tbody.innerHTML = "";
+
+      stations.forEach(station => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${station.stn_id}</td>
+          <td>${station.station_name}</td>
+          <td>${station.station_color}</td>
+          <td>${station.description}</td>
+          <td>${station.layout}</td>
+          <td>${station.status}</td>
+          <td>${station.latitude}</td>
+          <td>${station.longitude}</td>
+          <td>${station.firstTrain}</td>
+          <td>${station.lastTrain}</td>
+          <td>${station.frequency}</td>
+          <td>${station.gateno}</td>
+          <td>${station.gateinfo}</td>
+          <td>${station.facilities}</td>
+          <td>${station.nearby}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadStations();
+  </script>
+</body>
+</html>
