@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Station Management</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, textarea { width: 100%; margin: 5px 0; padding: 8px; }
+    button { margin: 5px 5px 20px 0; padding: 10px 15px; }
+    .form-section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Station Management</h1>
+
+  <!-- INSERT / UPDATE -->
+  <div class="form-section">
+    <h2>Insert / Update Station</h2>
+    <form id="stationForm">
+      <input type="number" id="stn_id" placeholder="Station ID" required>
+      <input type="text" id="station_name" placeholder="Station Name" required>
+      <input type="text" id="station_color" placeholder="Station Color">
+      <textarea id="description" placeholder="Description"></textarea>
+      <input type="text" id="layout" placeholder="Layout">
+      <input type="text" id="status" placeholder="Status">
+      <input type="number" step="0.0001" id="latitude" placeholder="Latitude" required>
+      <input type="number" step="0.0001" id="longitude" placeholder="Longitude" required>
+      <input type="text" id="location" placeholder="Location">
+      <input type="text" id="firstTrain" placeholder="First Train">
+      <input type="text" id="lastTrain" placeholder="Last Train">
+      <input type="text" id="frequency" placeholder="Frequency">
+      <input type="number" id="gateno" placeholder="Number of Gates">
+      <input type="text" id="gateinfo" placeholder="Gate Info (comma-separated)">
+      <input type="text" id="facilities" placeholder="Facilities (comma-separated)">
+      <input type="text" id="nearby" placeholder="Nearby (comma-separated)">
+      <br>
+      <button type="submit">Insert / Update</button>
+    </form>
+  </div>
+
+  <!-- DELETE -->
+  <div class="form-section">
+    <h2>Delete Station</h2>
+    <input type="number" id="delete_id" placeholder="Station ID to Delete">
+    <button onclick="deleteStation()">Delete</button>
+  </div>
+
+  <script>
+    const API_BASE = "https://stninfo.yaseenmd965.workers.dev"; // Replace with your Worker URL
+
+    document.getElementById("stationForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const stn_id = document.getElementById("stn_id").value;
+
+      // Gather all input fields
+      const data = {
+        stn_id: Number(stn_id),
+        station_name: document.getElementById("station_name").value,
+        station_color: document.getElementById("station_color").value,
+        description: document.getElementById("description").value,
+        layout: document.getElementById("layout").value,
+        status: document.getElementById("status").value,
+        latitude: Number(document.getElementById("latitude").value),
+        longitude: Number(document.getElementById("longitude").value),
+        location: document.getElementById("location").value,
+        firstTrain: document.getElementById("firstTrain").value,
+        lastTrain: document.getElementById("lastTrain").value,
+        frequency: document.getElementById("frequency").value,
+        gateno: Number(document.getElementById("gateno").value),
+        gateinfo: document.getElementById("gateinfo").value,
+        facilities: document.getElementById("facilities").value,
+        nearby: document.getElementById("nearby").value
+      };
+
+      // Check if station exists for update
+      const existing = await fetch(`${API_BASE}/stations/${stn_id}`).then(r => r.json());
+      let method = "POST";
+      if (!existing.error) method = "PUT"; // Update if exists
+
+      const res = await fetch(`${API_BASE}/stations/${stn_id}`, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+      alert(JSON.stringify(result));
+      document.getElementById("stationForm").reset();
+    });
+
+    async function deleteStation() {
+      const stn_id = document.getElementById("delete_id").value;
+      if (!stn_id) return alert("Enter Station ID");
+      const res = await fetch(`${API_BASE}/stations/${stn_id}`, { method: "DELETE" });
+      const result = await res.json();
+      alert(JSON.stringify(result));
+      document.getElementById("delete_id").value = "";
+    }
+  </script>
+</body>
+</html>
