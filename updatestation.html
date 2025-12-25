@@ -1,118 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Station Management</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input, textarea { width: 100%; margin: 5px 0; padding: 8px; }
-    button { margin: 5px 5px 20px 0; padding: 10px 15px; }
-    .form-section { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h1>Station Management</h1>
 
-  <!-- INSERT / UPDATE -->
-  <div class="form-section">
-    <h2>Insert / Update Station</h2>
-    <form id="stationForm">
-      <input type="number" id="stn_id" placeholder="Station ID" required>
-      <input type="text" id="station_name" placeholder="Station Name" required>
-      <input type="text" id="station_color" placeholder="Station Color">
-      <textarea id="description" placeholder="Description"></textarea>
-      <input type="text" id="layout" placeholder="Layout">
-      <input type="text" id="status" placeholder="Status">
-      <input type="number" step="0.0001" id="latitude" placeholder="Latitude" required>
-      <input type="number" step="0.0001" id="longitude" placeholder="Longitude" required>
-      <input type="text" id="location" placeholder="Location">
-      <input type="text" id="firstTrain" placeholder="First Train">
-      <input type="text" id="lastTrain" placeholder="Last Train">
-      <input type="text" id="frequency" placeholder="Frequency">
-      <input type="number" id="gateno" placeholder="Number of Gates">
-      <input type="text" id="gateinfo" placeholder="Gate Info (comma-separated)">
-      <input type="text" id="facilities" placeholder="Facilities (comma-separated)">
-      <input type="text" id="nearby" placeholder="Nearby (comma-separated)">
-      <br>
-      <button type="submit">Insert / Update</button>
+<body class="bg-gray-100 p-6">
+  <h1 class="text-3xl font-bold mb-6">🚉 Station Management</h1>
+
+  <!-- FORM -->
+  <div class="bg-white p-6 rounded shadow mb-8">
+    <h2 class="text-xl font-semibold mb-4">Insert / Update Station</h2>
+
+    <form id="stationForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <input id="stn_id" type="number" placeholder="Station ID" class="input" required />
+      <input id="station_name" placeholder="Station Name" class="input" required />
+      <input id="station_color" placeholder="Color" class="input" />
+
+      <input id="layout" placeholder="Layout" class="input" />
+      <input id="status" placeholder="Status" class="input" />
+      <input id="location" placeholder="Location" class="input" />
+
+      <input id="latitude" type="number" step="0.0001" placeholder="Latitude" class="input" />
+      <input id="longitude" type="number" step="0.0001" placeholder="Longitude" class="input" />
+
+      <input id="firstTrain" placeholder="First Train" class="input" />
+      <input id="lastTrain" placeholder="Last Train" class="input" />
+      <input id="frequency" placeholder="Frequency" class="input" />
+
+      <input id="gateno" type="number" placeholder="Gate No" class="input" />
+      <input id="gateinfo" placeholder="Gate Info" class="input" />
+      <input id="facilities" placeholder="Facilities" class="input" />
+      <input id="nearby" placeholder="Nearby" class="input" />
+
+      <textarea id="description" placeholder="Description" class="input col-span-full"></textarea>
+
+      <button class="col-span-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        Save Station
+      </button>
     </form>
   </div>
 
-  <!-- DELETE -->
-  <div class="form-section">
-    <h2>Delete Station</h2>
-    <input type="number" id="delete_id" placeholder="Station ID to Delete">
-    <button onclick="deleteStation()">Delete</button>
+  <!-- SEARCH -->
+  <input
+    id="search"
+    placeholder="🔍 Search station..."
+    class="mb-4 w-full p-3 rounded border"
+  />
+
+  <!-- TABLE -->
+  <div class="bg-white rounded shadow overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="p-3 text-left">ID</th>
+          <th class="p-3 text-left">Name</th>
+          <th class="p-3 text-left">Location</th>
+          <th class="p-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="stationTable"></tbody>
+    </table>
   </div>
 
-  <script>
-  const API_BASE = "https://stninfo.yaseenmd965.workers.dev";
+<script>
+const API_BASE = "https://stninfo.yaseenmd965.workers.dev";
+let stations = [];
 
-  document.getElementById("stationForm").addEventListener("submit", async e => {
-    e.preventDefault();
+const inputClass = document.querySelectorAll(".input");
+inputClass.forEach(i => i.classList.add("p-2","border","rounded","w-full"));
 
-    const stn_id = Number(document.getElementById("stn_id").value);
+async function loadStations() {
+  const res = await fetch(`${API_BASE}/stations`);
+  stations = await res.json();
+  renderTable(stations);
+}
 
-    const data = {
-      stn_id,
-      station_name: document.getElementById("station_name").value,
-      station_color: document.getElementById("station_color").value,
-      description: document.getElementById("description").value,
-      layout: document.getElementById("layout").value,
-      status: document.getElementById("status").value,
-      latitude: Number(document.getElementById("latitude").value),
-      longitude: Number(document.getElementById("longitude").value),
-      location: document.getElementById("location").value,
-      firstTrain: document.getElementById("firstTrain").value,
-      lastTrain: document.getElementById("lastTrain").value,
-      frequency: document.getElementById("frequency").value,
-      gateno: Number(document.getElementById("gateno").value || 0),
-      gateinfo: document.getElementById("gateinfo").value,
-      facilities: document.getElementById("facilities").value,
-      nearby: document.getElementById("nearby").value
-    };
+function renderTable(data) {
+  const tbody = document.getElementById("stationTable");
+  tbody.innerHTML = "";
 
-    // Decide action
-    const isUpdate = confirm("Click OK to UPDATE, Cancel to INSERT");
+  data.forEach(s => {
+    tbody.innerHTML += `
+      <tr class="border-t hover:bg-gray-50">
+        <td class="p-3">${s.stn_id}</td>
+        <td class="p-3">${s.station_name}</td>
+        <td class="p-3">${s.location || ""}</td>
+        <td class="p-3 space-x-2 text-center">
+          <button onclick='editStation(${JSON.stringify(s)})'
+            class="bg-yellow-400 px-3 py-1 rounded">Edit</button>
+          <button onclick="deleteStation(${s.stn_id})"
+            class="bg-red-500 text-white px-3 py-1 rounded">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
 
-    const url = isUpdate
-      ? `${API_BASE}/stations/${stn_id}`
-      : `${API_BASE}/stations`;
-
-    const method = isUpdate ? "PUT" : "POST";
-
-    try {
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-
-      const result = await res.json();
-      alert(JSON.stringify(result, null, 2));
-      document.getElementById("stationForm").reset();
-    } catch (err) {
-      alert("Request failed");
+function editStation(s) {
+  for (const key in s) {
+    if (document.getElementById(key)) {
+      document.getElementById(key).value = s[key] ?? "";
     }
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.getElementById("stationForm").onsubmit = async e => {
+  e.preventDefault();
+  const stn_id = stn_idInput.value;
+
+  const data = {};
+  document.querySelectorAll("#stationForm input, textarea").forEach(el => {
+    data[el.id] = el.value;
   });
 
-  async function deleteStation() {
-    const stn_id = document.getElementById("delete_id").value;
-    if (!stn_id) return alert("Enter Station ID");
+  const method = confirm("Update station? OK = Update, Cancel = Insert") ? "PUT" : "POST";
+  const url = method === "PUT"
+    ? `${API_BASE}/stations/${stn_id}`
+    : `${API_BASE}/stations`;
 
-    const ok = confirm(`Delete station ${stn_id}?`);
-    if (!ok) return;
+  await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
 
-    const res = await fetch(`${API_BASE}/stations/${stn_id}`, {
-    method: "DELETE"
-    });
+  e.target.reset();
+  loadStations();
+};
 
-    const result = await res.json();
-    alert(JSON.stringify(result, null, 2));
-    document.getElementById("delete_id").value = "";
-  }
+async function deleteStation(id) {
+  if (!confirm("Delete station " + id + "?")) return;
+  await fetch(`${API_BASE}/stations/${id}`, { method: "DELETE" });
+  loadStations();
+}
+
+document.getElementById("search").oninput = e => {
+  const q = e.target.value.toLowerCase();
+  renderTable(
+    stations.filter(s =>
+      String(s.stn_id).includes(q) ||
+      s.station_name.toLowerCase().includes(q) ||
+      (s.location || "").toLowerCase().includes(q)
+    )
+  );
+};
+
+const stn_idInput = document.getElementById("stn_id");
+loadStations();
 </script>
-
 </body>
 </html>
