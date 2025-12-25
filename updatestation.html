@@ -47,56 +47,72 @@
   </div>
 
   <script>
-    const API_BASE = "https://stninfo.yaseenmd965.workers.dev"; // Replace with your Worker URL
+  const API_BASE = "https://stninfo.yaseenmd965.workers.dev";
 
-    document.getElementById("stationForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      const stn_id = document.getElementById("stn_id").value;
+  document.getElementById("stationForm").addEventListener("submit", async e => {
+    e.preventDefault();
 
-      // Gather all input fields
-      const data = {
-        stn_id: Number(stn_id),
-        station_name: document.getElementById("station_name").value,
-        station_color: document.getElementById("station_color").value,
-        description: document.getElementById("description").value,
-        layout: document.getElementById("layout").value,
-        status: document.getElementById("status").value,
-        latitude: Number(document.getElementById("latitude").value),
-        longitude: Number(document.getElementById("longitude").value),
-        location: document.getElementById("location").value,
-        firstTrain: document.getElementById("firstTrain").value,
-        lastTrain: document.getElementById("lastTrain").value,
-        frequency: document.getElementById("frequency").value,
-        gateno: Number(document.getElementById("gateno").value),
-        gateinfo: document.getElementById("gateinfo").value,
-        facilities: document.getElementById("facilities").value,
-        nearby: document.getElementById("nearby").value
-      };
+    const stn_id = Number(document.getElementById("stn_id").value);
 
-      // Check if station exists for update
-      const existing = await fetch(`${API_BASE}/stations/${stn_id}`).then(r => r.json());
-      let method = "POST";
-      if (!existing.error) method = "PUT"; // Update if exists
+    const data = {
+      stn_id,
+      station_name: document.getElementById("station_name").value,
+      station_color: document.getElementById("station_color").value,
+      description: document.getElementById("description").value,
+      layout: document.getElementById("layout").value,
+      status: document.getElementById("status").value,
+      latitude: Number(document.getElementById("latitude").value),
+      longitude: Number(document.getElementById("longitude").value),
+      location: document.getElementById("location").value,
+      firstTrain: document.getElementById("firstTrain").value,
+      lastTrain: document.getElementById("lastTrain").value,
+      frequency: document.getElementById("frequency").value,
+      gateno: Number(document.getElementById("gateno").value || 0),
+      gateinfo: document.getElementById("gateinfo").value,
+      facilities: document.getElementById("facilities").value,
+      nearby: document.getElementById("nearby").value
+    };
 
-      const res = await fetch(`${API_BASE}/stations/${stn_id}`, {
-        method: method,
+    // Decide action
+    const isUpdate = confirm("Click OK to UPDATE, Cancel to INSERT");
+
+    const url = isUpdate
+      ? `${API_BASE}/stations/${stn_id}`
+      : `${API_BASE}/stations`;
+
+    const method = isUpdate ? "PUT" : "POST";
+
+    try {
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
 
       const result = await res.json();
-      alert(JSON.stringify(result));
+      alert(JSON.stringify(result, null, 2));
       document.getElementById("stationForm").reset();
+    } catch (err) {
+      alert("Request failed");
+    }
+  });
+
+  async function deleteStation() {
+    const stn_id = document.getElementById("delete_id").value;
+    if (!stn_id) return alert("Enter Station ID");
+
+    const ok = confirm(`Delete station ${stn_id}?`);
+    if (!ok) return;
+
+    const res = await fetch(`${API_BASE}/stations/${stn_id}`, {
+    method: "DELETE"
     });
 
-    async function deleteStation() {
-      const stn_id = document.getElementById("delete_id").value;
-      if (!stn_id) return alert("Enter Station ID");
-      const res = await fetch(`${API_BASE}/stations/${stn_id}`, { method: "DELETE" });
-      const result = await res.json();
-      alert(JSON.stringify(result));
-      document.getElementById("delete_id").value = "";
-    }
-  </script>
+    const result = await res.json();
+    alert(JSON.stringify(result, null, 2));
+    document.getElementById("delete_id").value = "";
+  }
+</script>
+
 </body>
 </html>
